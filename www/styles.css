@@ -1,0 +1,271 @@
+/* Basic page structure */
+
+img {
+  border: none;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  
+  font-size: 14px;
+  line-height: 18px;
+  font-family: 'Times New Roman';
+  
+  background: white;
+}
+
+#header {
+  background: url(images/header.png) top left repeat-x;
+  box-shadow: 0px 1px 9px #CCCCCC;
+  -moz-box-shadow: 0px 1px 9px #CCCCCC;
+  -webkit-box-shadow: 0px 1px 9px #CCCCCC;
+}
+
+#logo {
+  height: 36px;
+  line-height: 36px;
+  font-size: 36px;
+  font-family: Arial;
+  color: white;
+  padding: 17px;
+}
+
+#sitename {
+  font-weight: bold;
+  margin-right: 1em;
+}
+
+#sinusoid {
+  height: 35px;
+  border-bottom: solid 1px #FFCCCC;
+  background: url(images/sinusoid.png) repeat-x;
+}
+
+#main {
+  width: 960px;
+  position: absolute;
+  left: 50%;
+  margin-left: -480px;
+  border: solid 1px #CCCCCC;
+  border-top: none;
+  
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+  
+  box-shadow: 0px 3px 9px #CCCCCC, inset 0px 0px 9px #CCCCCC;
+  -moz-box-shadow: 0px 3px 9px #CCCCCC, inset 0px 0px 9px #CCCCCC;
+  -webkit-box-shadow: 0px 3px 9px #CCCCCC, inset 0px 0px 9px #CCCCCC;
+}
+
+#footer {
+  color: #CC0000;
+  text-align: center;
+  margin: 18px;
+  width: 100%;
+  clear: both;
+}
+
+/* Pods */
+
+.pod {
+  border: solid 1px #CCCCCC;
+  
+  border-radius: 18px;
+  -moz-border-radius: 18px;
+  -webkit-border-radius: 18px;
+  margin: 18px;
+  
+}
+
+.pod .title {
+  color: #CC0000;
+  font-family: Arial;
+  font-weight: bold;
+  padding: 8px;
+  padding-left: 18px;
+  background: #EEEEEE;
+  text-shadow:1px 1px #DDDDDD;
+  
+  border-top-right-radius: 18px;
+  -moz-border-top-right-radius: 18px;
+  -webkit-border-top-right-radius: 18px;
+  
+  border-top-left-radius: 18px;
+  -moz-border-top-left-radius: 18px;
+  -webkit-border-top-left-radius: 18px;
+  
+  border-bottom: solid 1px #CCCCCC;
+  box-shadow: inset 0px 9px 27px -3px white;
+  -moz-box-shadow: inset 0px 9px 27px -3px white;
+  -webkit-box-shadow: inset 0px 9px 27px -3px white;
+}
+
+.pod .content {
+  margin: 18px;
+}
+
+/* Alignment */
+
+.left {
+  float: left;
+  margin-right: 18px;
+}
+
+.right {
+  float: right;
+  margin-left: 18px;
+}
+
+.half {
+  width: 50%;
+  float: left;
+}
+
+/* Forms */
+
+form .field {
+  margin-bottom: 18px;
+}
+
+form .error {
+  background: #DD1111;
+  color: white;
+}
+
+form .field.submit {
+  border-bottom: none;
+  text-align: right;          
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+label {
+  color: #CC0000;
+  margin-right: 9px;
+}
+
+fieldset {
+  border: solid 1px #CCCCCC;
+  padding: 18px;
+  padding-bottom: 0;
+  margin: 18px 0;
+}
+
+fieldset legend {
+  color: #CC0000;
+  font-weight: bold;
+}
+
+input[type="text"] {
+  border: solid 1px #CC0000;
+  text-align: right;
+  width: 72px;
+  margin: 0 9px;
+}
+
+.unit, .between {
+  color: #999999;
+}
+
+form .tip {
+  position: relative;
+  z-index: 5001;
+  background: #FF0000;
+  margin-bottom: -18px;
+  top: 18px;
+  width: 96px;
+  /*display: none;*/
+  /*margin-top: 18px;*/
+}
+
+/* Tables */
+
+table {
+  border-collapse: collapse;
+  font-family: Arial;
+}
+
+td, th, table caption {
+  border: solid 1px #CCCCCC;
+  padding: 9px;
+  vertical-align: middle;
+}
+
+td {
+  text-align: right;
+}
+
+td[colspan] {
+  text-align: center;
+}
+
+th {
+  font-weight: normal;
+  text-align: left;
+}
+
+th, table caption {
+  background: #EEEEEE;
+  color: #999999; /*#CC0000;*/
+  text-shadow: 1px 1px #DDDDDD;
+}
+
+table caption {
+  border-bottom: 0px;
+  font-weight: bold;
+}
+
+th.nested {
+  padding-left: 18px;
+}
+
+th.nested.twice {
+  padding-left: 36px;
+}
+
+table.properties {
+  margin-bottom: 18px;
+}
+
+table.properties td.distribution {
+  text-align: left;
+}
+
+table.properties td.distribution label.type {
+  float: right;
+  color: #999999;
+}
+
+table.properties .infinity {
+  margin-left: 9px;
+}
+
+/* Miscellanous */
+
+.color {
+  width: 14px;
+  height: 14px;
+  float: left;
+  margin-right: 9px;
+}
+
+.clear {
+  clear: both;
+}
+
+.clear:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+/* Вывод */
+
+.pod .row .label {
+  font-weight: bold;
+  color: #CC0000;
+  margin-right: 9px;
+}
