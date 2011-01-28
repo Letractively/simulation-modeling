@@ -1,0 +1,345 @@
+/**
+* { border: solid 1px red }
+* * { border-color: orange }
+* * * { border-color: yellow }
+* * * * { border-color: green }
+* * * * * { border-color: blue }
+* * * * * * { border-color: purple }
+/**/
+
+/* Page cleanup */
+
+body {
+  padding: 0;
+  margin: 0;
+  
+  line-height: 18px;
+  font-family: Times New Roman;
+  font-size: 14px;
+}
+
+img {
+  border: none;
+}
+
+/* Header */
+
+#header {
+  background: #8F2B3E url(/images/header.png) no-repeat;
+}
+
+#appname, #title {
+  font-size: 27px;
+  line-height: 36px;
+  padding: 18px;
+  font-family: Arial;
+  color: white;
+  display: inline-block;
+}
+
+#appname a {
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+}
+#sinusoid {
+  background: url(/images/sinusoid.png) repeat-x;
+  height: 35px;
+  width: 100%;
+}
+
+/* Main content */
+
+#main {
+  width: 960px;
+  position: absolute;
+  left: 50%;
+  margin-left: -480px;
+  padding: 9px;
+  padding-top: 10px;
+  
+  border: solid 1px #CCCCCC;
+  border-top: none;
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+  
+  box-shadow: 0px 3px 9px #CCCCCC, inset 0px 0px 9px #CCCCCC;
+  -moz-box-shadow: 0px 3px 9px #CCCCCC, inset 0px 0px 9px #CCCCCC;
+  -o-box-shadow: 0px 3px 9px #CCCCCC, inset 0px 0px 9px #CCCCCC;
+  
+  /* Commented out for Chrome due to bug:
+  http://code.google.com/p/chromium/issues/detail?id=25334 */
+  /*-webkit-box-shadow: 0px 3px 9px #CCCCCC, inset 0px 0px 9px #CCCCCC; */
+}
+
+#content {
+  margin: 0 9px;
+}
+
+#content.aside-left {
+  padding-left: 288px;
+}
+
+/* Text formatting */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: Arial;
+  color: #CC0000;
+  line-height: 36px;
+  margin: 9px 0;
+  padding: 0;
+  
+  text-shadow: 1px 1px 2px #CCCCCC;
+}
+
+h1 { font-size: 24px; }
+h2 { font-size: 22px; }
+h3 { font-size: 20px; }
+h4 { font-size: 18px; }
+h5 { font-size: 16px; }
+h6 { font-size: 14px; }
+
+p {
+  margin: 9px 0;
+  padding: 0;
+}
+
+strong {
+  color: #CC0000;
+}
+
+img {
+  border: 0;
+}
+
+/* Block */
+
+.block {
+  border: solid 1px #CCCCCC;
+  border-radius: 18px;
+  box-shadow: 0px 1px 5px #CCCCCC;
+  margin: 9px;
+}
+
+.block .title {
+  font-family: Arial;
+  color: #CC0000;
+  font-weight: bold;
+  padding: 8px 18px;
+  padding-top: 9px;
+  
+  border-top-right-radius: 18px;
+  border-top-left-radius: 18px;
+  
+  border-bottom: solid 1px #CCCCCC;
+
+  background: #EEEEEE;
+  box-shadow: inset 0px 9px 18px -3px white;
+  -webkit-box-shadow: inset 0px 9px 18px -3px white;
+  -moz-box-shadow: inset 0px 9px 18px -3px white;
+  -o-box-shadow: inset 0px 9px 18px -3px white;
+}
+
+.block .content {
+  padding: 9px 18px;
+}
+
+/* Aside block */
+
+.aside {
+  width: 270px;
+}
+
+/* Alignment */
+
+.right { float: right }
+.left  { float: left }
+.clear:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+/* Models list */
+
+ul#models {
+  list-style-type: none;
+  margin: 9px 0;
+  padding: 0;
+}
+
+ul#models li {
+  float: left;
+  text-align: center;
+  width: 128px;
+  margin-right: 18px;
+}
+
+ul#models li img {
+  margin-top: 7px;
+}
+
+ul#models li a {
+  color: #CC0000;
+  font-family: Arial;
+  text-decoration: none;
+  text-shadow: 1px 1px 2px #CCCCCC;
+}
+
+ul#models li span {
+  display: block;
+}
+
+/* Tables */
+
+table {
+  font-size: 12px;
+  border-collapse: collapse;
+  
+  margin: 9px 0;
+  font-family: Arial;
+}
+
+table td, table th, table caption {
+  border: solid 1px #CCCCCC;
+  height: 27px;
+  padding: 0 9px;
+}
+
+table td {
+  text-align: right;
+}
+
+table th {
+  text-align: left;
+}
+
+table th, table caption {
+  color: #999999;
+  background: #EEEEEE;
+}
+
+table th.section, table caption {
+  color: #CC0000;
+  border-right: 0;
+  padding-left: 9px;
+  font-weight: bold;
+  
+  box-shadow: inset 0px 9px 18px -3px white;
+  -webkit-box-shadow: inset 0px 9px 18px -3px white;
+  -moz-box-shadow: inset 0px 9px 18px -3px white;
+  -o-box-shadow: inset 0px 9px 18px -3px white;
+}
+
+table caption {
+  border: solid 1px #CCCCCC;
+  border-bottom: 0;
+  line-height: 26px;
+  
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+}
+
+.nested {
+  padding-left: 18px;
+}
+
+.nested.twice {
+  padding-left: 36px;
+}
+
+/* Properties editor */
+
+form {
+  margin: 0;
+  padding: 0;
+}
+
+table.properties {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+table.properties td,
+table.properties th {
+  border: 0;
+  border-bottom: solid 1px #CCCCCC;
+}
+
+table.properties th.label {
+  text-align: right;
+  padding: 0 9px;
+  border-right: solid 1px #CCCCCC;
+}
+
+table.properties input.text {
+  margin: 0;
+  padding: 0;
+  text-align: right;
+  width: 100%;
+  border: 0;
+}
+
+table.properties input.text:focus {
+  outline: none;
+}
+
+table.properties .submit {
+  text-align: right;
+  border-bottom: 0;
+  padding-right: 18px;
+}
+
+/* Balloon */
+
+.balloon {
+  color: white;
+  background: #CC0000;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 14px;
+  
+  width: 180px;
+  position: relative;
+  left: 36px;
+  top: 27px;
+  height: 30px;
+  padding: 3px 9px;
+  margin-top: -36px;
+  margin-right: -180px;
+  z-index: 10;
+  
+  overflow: hidden;
+  text-align: left;
+  float: right;
+  
+  border-radius: 9px;
+  box-shadow: 0px 1px 5px #CCCCCC;
+  box-shadow: inset 0px 9px 18px -9px white;
+}
+
+/* Color */
+
+.color {
+  height: 18px;
+  width: 18px;
+  display: inline-block;
+  margin-right: 9px;
+}
+
+/* Error message */
+
+.error-message {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  vertical-align: middle;
+  
+  color: #CCCCCC;
+  font-size: 24px;
+}
+
+

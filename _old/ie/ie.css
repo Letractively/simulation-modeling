@@ -1,0 +1,10 @@
+/* IE compatibility */
+
+img {
+  behavior: url(iepngfix.htc);
+}
+
+#header, #main, .pod, .pod.title, img {
+  behavior: url(pie.htc);
+  position: relative;
+}

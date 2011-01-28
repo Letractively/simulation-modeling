@@ -1,0 +1,137 @@
+{% extends "model.html" %}
+
+{% block main %}
+  <div class="block aside left">
+    <div class="title">Параметры</div>
+    <form action="" method="post">
+      <table class="properties">
+        <tr>
+          <th class="label">Число каналов:</th>
+          <td>
+            {% input "channelsCount" %}
+          </td>
+        </tr>
+        <tr>
+          <th class="label">Продолжительность:</th>
+          <td>
+            {% input "totalTime" %}
+          </td>
+        </tr>
+        
+        <tr><th colspan="2" class="section">Потоки заявок</th></tr>
+        <tr>
+          <th class="label">Входной:</th>
+          <td>
+            {% input "streams.in.mean" %}
+            <input type="hidden" name="streams.in.distribution" value="exponential" />
+          </td>
+        </tr>
+        <tr>
+          <th class="label">Выходной:</th>
+          <td>
+            {% input "streams.out.mean" %}
+            <input type="hidden" name="streams.out.distribution" value="exponential" />
+          </td>
+        </tr>
+        
+        <tr><th colspan="2" class="section">Очередь</th></tr>
+        <tr>
+          <th class="label">Размер:</th>
+          <td>{% input "queue.size" %}</td>
+        </tr>
+        <tr>
+          <th class="label">Время ожидания:</th>
+          <td>{% input "queue.time" %}</td>
+        </tr>
+        
+        <tr><th colspan="2" class="section">Сбои</th></tr>
+        <tr>
+          <th class="label">Наработка на отказ:</th>
+          <td>{% input "faults.problems" %}</td>
+        </tr>
+        <tr>
+          <th class="label">Время ремонта:</th>
+          <td>{% input "faults.repairs" %}</td>
+        </tr>
+        <tr>
+          <th class="label">Вероятность аварии:</th>
+          <td>{% input "faults.destructive" %}</td>
+        </tr>
+
+        <tr>
+          <td class="submit" colspan="2">
+            <input type="submit" value="Считать" />
+          </td>
+        </tr>
+      </table>
+    </form>
+  </div>
+  
+  
+  <div id="content" class="aside-left">
+    {% if output %}<div class="block">
+      <div class="title">Качество работы системы</div>
+      <div class="content" style="padding-top: 18px">
+        <table class="left">
+          <caption>Статистика заявок</caption>
+          <tbody>
+            <tr>
+              <th>Всего</th>
+              <td>{{ output.quality.abs.total }}</td>
+            </tr>
+            <tr>
+              <th class="nested">
+                <div class="color" style="background: #008090">&nbsp;</div>
+                Принято
+              </th>
+              <td>{{ output.quality.abs.accept }}</td>
+            </tr>
+            <tr>
+              <th class="nested">Отклонено</th>
+              <td>{{ output.quality.abs.reject }}</td>
+            </tr>
+            
+            <tr>
+              <th class="nested twice">
+                <div class="color" style="background: #4D109C">&nbsp;</div>
+                По времени ожидания
+              </th>
+              <td>{{ output.quality.abs.timeout }}</td>
+            </tr>
+            
+            <tr>
+              <th class="nested twice">
+                <div class="color" style="background: #9C104D">&nbsp;</div>
+                По длине очереди
+              </th>
+              <td>{{ output.quality.abs.sizeout }}</td>
+            </tr>
+            
+            <tr>
+              <th class="nested twice">
+                <div class="color" style="background: #FF4D6F">&nbsp;</div>
+                По концу рабочего времени
+              </th>
+              <td>{{ output.quality.abs.shutdown }}</td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <img alt="Качество работы системы" class="chart" style="width: 270px; height: 180px; margin: 9px 18px" src="http://chart.apis.google.com/chart?cht=p&amp;chs=270x180&amp;chl={{ output.quality.pc.accept }}%|{{ output.quality.pc.timeout }}%|{{ output.quality.pc.sizeout }}%|{{ output.quality.pc.shutdown }}%&amp;chco=008090,4D109C,9C104D,FF4D6F&amp;chds=0,{{ output.quality.abs.total }}&amp;chd=t:{{ output.quality.abs.accept }},{{ output.quality.abs.timeout }},{{ output.quality.abs.sizeout }},{{ output.quality.abs.shutdown }}" />
+      </div>
+    </div>
+    
+    <div class="block">
+      <div class="title">Степень загрузки системы</div>
+      <div class="content">
+        
+      </div>
+    </div>{% else %}
+    <div id="content">
+        <h1>Система массового обслуживания</h1>
+        <p>Система массового обслуживания &mdash; одна из наиболее часто встречающихся моделей в экономике.</p>
+        <p><em><strong>TODO:</strong> не забыть воды налить</em>
+    </div>
+    {% endif %}
+  </div>
+{% endblock %}
