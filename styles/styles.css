@@ -16,6 +16,8 @@ body {
   line-height: 18px;
   font-family: Times New Roman;
   font-size: 14px;
+  
+  background: #CCCCFF;
 }
 
 img {
@@ -25,7 +27,10 @@ img {
 /* Header */
 
 #header {
-  background: #8F2B3E url(/images/header.png) no-repeat;
+  background: #8F2B3E;
+  background: url(/images/header.png) no-repeat;
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
 }
 
 #appname, #title {
@@ -35,6 +40,7 @@ img {
   font-family: Arial;
   color: white;
   display: inline-block;
+  margin-bottom: -1px;
 }
 
 #appname a {
@@ -42,6 +48,7 @@ img {
   color: white;
   text-decoration: none;
 }
+
 #sinusoid {
   background: url(/images/sinusoid.png) repeat-x;
   height: 35px;
@@ -50,33 +57,37 @@ img {
 
 /* Main content */
 
-#main {
-  width: 960px;
+#page {
+  width: 950px;
   position: absolute;
   left: 50%;
   margin-left: -480px;
-  padding: 9px;
-  padding-top: 10px;
+  margin-top: 20px;
+  background: white;
+  padding-bottom: 36px;
   
-  border: solid 1px #CCCCCC;
-  border-top: none;
-  border-bottom-left-radius: 18px;
-  border-bottom-right-radius: 18px;
+  /*border: solid 1px #CCCCCC;*/
+  border-radius: 18px;
   
-  box-shadow: 0px 3px 9px #CCCCCC, inset 0px 0px 9px #CCCCCC;
+  box-shadow: 0px 3px 9px #AAAADD, inset 0px 0px 9px #CCCCFF;
   -moz-box-shadow: 0px 3px 9px #CCCCCC, inset 0px 0px 9px #CCCCCC;
   -o-box-shadow: 0px 3px 9px #CCCCCC, inset 0px 0px 9px #CCCCCC;
   
   /* Commented out for Chrome due to bug:
-  http://code.google.com/p/chromium/issues/detail?id=25334 */
-  /*-webkit-box-shadow: 0px 3px 9px #CCCCCC, inset 0px 0px 9px #CCCCCC; */
+  http://code.google.com/p/chromium/issues/detail?id=25334
+  -webkit-box-shadow: 0px 3px 9px #CCCCCC, inset 0px 0px 9px #CCCCCC; */
+}
+
+#main {
+  padding: 9px;
 }
 
 #content {
-  margin: 0 9px;
+  margin: 9px;
+  padding: 0 9px;
 }
 
-#content.aside-left {
+.aside-left {
   padding-left: 288px;
 }
 
@@ -172,13 +183,34 @@ ul#models {
 
 ul#models li {
   float: left;
+  width: 180px;
+}
+
+ul#models li .inner {
   text-align: center;
-  width: 128px;
+  border: solid 1px #CCCCCC;
+  border-radius: 9px;
+  box-shadow: 0px 1px 5px #CCCCCC;
+  margin: 9px 0;
   margin-right: 18px;
 }
 
+ul#models li .inner:hover {
+  background: #EEEEEE;
+}
+
+ul#models li .inner .caption {
+  padding: 9px;
+  background: #EEEEEE;
+  border-bottom-left-radius: 9px;
+  border-bottom-right-radius: 9px;
+  border-top: solid 1px #CCCCCC;
+}
+
+/* adjust a 128x128 picture to the grid */
 ul#models li img {
   margin-top: 7px;
+  margin-bottom: 4px;
 }
 
 ul#models li a {

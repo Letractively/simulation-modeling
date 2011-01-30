@@ -82,7 +82,7 @@ def mss(channelsCount, queue, streams, faults, totalTime):
         channel = random.choice(free)
 
         # Время обработки заявки
-        orders[channel] = time + next(out_stream)
+        orders[channel] = time + out_stream.next()
 
     @action(state=increment)
     def sit(time):
@@ -122,10 +122,10 @@ def mss(channelsCount, queue, streams, faults, totalTime):
         channel = random.choice(busy)
 
         # Заявка ожидает ремонта оборудования
-        orders[channel] += next(repair_stream)
+        orders[channel] += repair_stream.next()
 
         if destructive: # Если случилась авария,
-            orders[channel] += next(out_stream) # Заявка ещё и обрабатывается заново
+            orders[channel] += out_stream.next() # Заявка ещё и обрабатывается заново
 
         # События
 
@@ -153,7 +153,7 @@ def mss(channelsCount, queue, streams, faults, totalTime):
     def onDispatch(*args):
         'Редирект на нужный обработчик события'
         onDispatch.route(*args)
-        orders[0] = next(eventStream)
+        orders[0] = eventStream.next()
 
     def onFault(time):
         'Неисправность'
@@ -163,18 +163,18 @@ def mss(channelsCount, queue, streams, faults, totalTime):
         'Комбинация генераторов'
 
         # Время последней заявки и последней неисправности
-        new, fault = next(in_stream), next(fault_stream)
+        new, fault = in_stream.next(), fault_stream.next()
 
         while True:
         # Время следующей заявки и следующей неисправности
             if new < fault:
                 onDispatch.route = onNew
                 yield new
-                new += next(in_stream)
+                new += in_stream.next()
             else:
                 onDispatch.route = onFault
                 yield fault
-                fault += next(fault_stream)
+                fault += fault_stream.next()
 
             # Бесконечность
 
@@ -187,7 +187,7 @@ def mss(channelsCount, queue, streams, faults, totalTime):
     mss.prevTime = 0
 
     # Структура, хранящая местоположение заявок и операции над ними.
-    orders = [next(eventStream)] + [Infinity] * channelsCount
+    orders = [eventStream.next()] + [Infinity] * channelsCount
 
     # Состояние
     mss.state = 0
@@ -264,7 +264,7 @@ def mss(channelsCount, queue, streams, faults, totalTime):
     orders['queue'] = round(queueTime / totalTime, 3)
 
     # Результаты работы
-    states = tuple(round(duration / totalTime * 100, 3) for duration in mss.states)
+    states = tuple(round(state / totalTime * 100, 3) for state in mss.states)
     return {
         'quality': {
             'abs': absolute,

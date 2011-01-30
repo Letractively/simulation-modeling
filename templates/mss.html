@@ -1,6 +1,6 @@
 {% extends "model.html" %}
 
-{% block main %}
+{% block content %}
   <div class="block aside left">
     <div class="title">Параметры</div>
     <form action="" method="post">
@@ -68,7 +68,7 @@
   </div>
   
   
-  <div id="content" class="aside-left">
+  <div id="output" class="aside-left">
     {% if output %}<div class="block">
       <div class="title">Качество работы системы</div>
       <div class="content" style="padding-top: 18px">
@@ -93,7 +93,7 @@
             
             <tr>
               <th class="nested twice">
-                <div class="color" style="background: #4D109C">&nbsp;</div>
+                <div class="color" style="background: #FBFF53">&nbsp;</div>
                 По времени ожидания
               </th>
               <td>{{ output.quality.abs.timeout }}</td>
@@ -101,7 +101,7 @@
             
             <tr>
               <th class="nested twice">
-                <div class="color" style="background: #9C104D">&nbsp;</div>
+                <div class="color" style="background: #1560BD">&nbsp;</div>
                 По длине очереди
               </th>
               <td>{{ output.quality.abs.sizeout }}</td>
@@ -117,13 +117,15 @@
           </tbody>
         </table>
         
-        <img alt="Качество работы системы" class="chart" style="width: 270px; height: 180px; margin: 9px 18px" src="http://chart.apis.google.com/chart?cht=p&amp;chs=270x180&amp;chl={{ output.quality.pc.accept }}%|{{ output.quality.pc.timeout }}%|{{ output.quality.pc.sizeout }}%|{{ output.quality.pc.shutdown }}%&amp;chco=008090,4D109C,9C104D,FF4D6F&amp;chds=0,{{ output.quality.abs.total }}&amp;chd=t:{{ output.quality.abs.accept }},{{ output.quality.abs.timeout }},{{ output.quality.abs.sizeout }},{{ output.quality.abs.shutdown }}" />
+        <img alt="Качество работы системы" class="chart" style="width: 270px; height: 180px; margin: 9px 18px" src="http://chart.apis.google.com/chart?cht=p&amp;chs=270x180&amp;chl={{ output.quality.pc.accept }}%|{{ output.quality.pc.timeout }}%|{{ output.quality.pc.sizeout }}%|{{ output.quality.pc.shutdown }}%&amp;chco=008090,FBFF53,1560BD,FF4D6F&amp;chds=0,{{ output.quality.abs.total }}&amp;chd=t:{{ output.quality.abs.accept }},{{ output.quality.abs.timeout }},{{ output.quality.abs.sizeout }},{{ output.quality.abs.shutdown }}" />
       </div>
     </div>
     
     <div class="block">
       <div class="title">Степень загрузки системы</div>
       <div class="content">
+        <img alt="Состояния системы по их вероятности" class="chart" src="http://chart.apis.google.com/chart?cht=lc&amp;chs=540x212&amp;chds=0,{{ output.load.longestState }}&amp;chxt=y,x&amp;chm=B,CCCCFF,0,0,0&amp;chxr=0,0,{{ output.load.longestState }}|1,0,{{ output.load.states|length|add:"-1" }}&amp;chco=1560BD&amp;chd=t:{{ output.load.states|join:"," }}">
+        <p>По оси абсцисс отложено количество заявок, которое находится в системе. По оси ординат отложено время, в течение которого в системе было именно столько заявок, в процентах к общей продолжительности работы. <strong>FIXME</strong>.</p>
         
       </div>
     </div>{% else %}

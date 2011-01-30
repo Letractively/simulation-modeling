@@ -29,14 +29,14 @@ class InputNode(django_template.Node):
         
         # <input>
         input_class = 'text' + (' error' if error else '')
-        input_tag = '<input class="{0}" name="{1}" id="{1}" value="{2}" />'.format(input_class, variable, value)
+        input_tag = '<input class="%s" name="%s" id="%s" value="%s" />' % (input_class, variable, variable, value)
         
         # <div class="error"> and return result HTML
         if error:
-            error_tag = '<div class="balloon" id="{0}">{1}</div>'.format(variable + '.error', error.encode('utf-8'))
-            return error_tag + input_tag
+            error_tag = '<div class="balloon" id="%s">%s</div>' % (variable + '.error', error.encode('utf-8'))
+            return error_tag + input_tag.encode('utf-8')
         else:
-            return input_tag
+            return input_tag.encode('utf-8')
 
 def input(parser, token):
     'Поле ввода'

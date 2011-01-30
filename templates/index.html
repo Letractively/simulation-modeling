@@ -1,6 +1,6 @@
 {% extends "sm.html" %}
 
-{% block main %}
+{% block content %}
 <div class="block aside right">
   <div class="title">Что это?</div>
   <div class="content">
@@ -13,31 +13,12 @@
   <ul id="models" class="clear">{% for model in models.items %}
     <li>
       <a href="/{{ model.0 }}">
-        <img alt="{{ model.1 }}" src="/images/models/{{ model.0 }}.png" />
-        <span>{{ model.1 }}</span>
+        <span class="inner">
+          <img alt="{{ model.1 }}" src="/images/models/{{ model.0 }}.png" />
+          <span class="caption">{{ model.1 }}</span>
+        </span>
       </a>
     </li>
   {% endfor %}</ul>
 </div>
-
-<!--div id="main">
-  <div class="sidebar left">
-    <div class="block">
-      <div class="title">Что это?</div>
-      <div class="content">
-        <p><strong>Simulation modeling</strong> &mdash; коллекция имитационных моделей для студентов, изучающих курс <a href="http://fdo.tusur.ru">ФДО ТУСУР</a> <strong>Имитационное моделирование экономических процессов</strong> (А. А. Мицель, Е. Б. Грибанова. Томск, ТМЦ ДО, 2007).</p>
-      </div>
-    </div>
-  </div>
-
-  <div id="content" class="sidebar-left clear">
-    <div class="block">
-      <div class="title">Список моделей</div>
-      <div class="content">
-        <p>Щёлкните нужную модель, чтобы открыть её.</p>
-
-        <div class="clear"></div>
-      </div>
-    </div>
-  </div>
-</div-->{% endblock %}
+{% endblock %}
