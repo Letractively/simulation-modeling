@@ -3,7 +3,7 @@
 {% block content %}
   <div class="block aside left">
     <div class="title">Параметры</div>
-    <form action="" method="post">
+    <form action="/mss" method="post">
       <table class="properties">
         <tr>
           <th class="label">Число каналов:</th>
@@ -15,43 +15,44 @@
           <th class="label">Продолжительность:</th>
           <td>
             {% input "totalTime" %}
+            <span class="unit">ч</span>
           </td>
         </tr>
         
         <tr><th colspan="2" class="section">Потоки заявок</th></tr>
-        <tr>
-          <th class="label">Входной:</th>
-          <td>
-            {% input "streams.in.mean" %}
-            <input type="hidden" name="streams.in.distribution" value="exponential" />
-          </td>
-        </tr>
-        <tr>
-          <th class="label">Выходной:</th>
-          <td>
-            {% input "streams.out.mean" %}
-            <input type="hidden" name="streams.out.distribution" value="exponential" />
-          </td>
-        </tr>
-        
+        {% distribution "Входной:" "streams.in" %}
+        {% distribution "Выходной:" "streams.out" %}
+
         <tr><th colspan="2" class="section">Очередь</th></tr>
         <tr>
           <th class="label">Размер:</th>
-          <td>{% input "queue.size" %}</td>
+          <td>
+            {% input "queue.size" %}
+            <span class="unit">мест</span>
+          </td>
         </tr>
         <tr>
           <th class="label">Время ожидания:</th>
-          <td>{% input "queue.time" %}</td>
+          <td>
+            {% input "queue.time" %}
+            <span class="unit">ч</span>
+          </td>
         </tr>
         
         <tr><th colspan="2" class="section">Сбои</th></tr>
         <tr>
           <th class="label">Наработка на отказ:</th>
-          <td>{% input "faults.problems" %}</td>
+          <td>
+            {% input "faults.problems" %}
+            <span class="unit">ч</span>
+          </td>
         </tr>
         <tr>
           <th class="label">Время ремонта:</th>
-          <td>{% input "faults.repairs" %}</td>
+          <td>
+            {% input "faults.repairs" %}
+            <span class="unit">ч</span>
+          </td>
         </tr>
         <tr>
           <th class="label">Вероятность аварии:</th>
@@ -81,7 +82,7 @@
             </tr>
             <tr>
               <th class="nested">
-                <div class="color" style="background: #008090">&nbsp;</div>
+                <span class="color" style="background: #008090">&nbsp;</span>
                 Принято
               </th>
               <td>{{ output.quality.abs.accept }}</td>
@@ -93,7 +94,7 @@
             
             <tr>
               <th class="nested twice">
-                <div class="color" style="background: #FBFF53">&nbsp;</div>
+                <span class="color" style="background: #FBFF53">&nbsp;</span>
                 По времени ожидания
               </th>
               <td>{{ output.quality.abs.timeout }}</td>
@@ -101,7 +102,7 @@
             
             <tr>
               <th class="nested twice">
-                <div class="color" style="background: #1560BD">&nbsp;</div>
+                <span class="color" style="background: #1560BD">&nbsp;</span>
                 По длине очереди
               </th>
               <td>{{ output.quality.abs.sizeout }}</td>
@@ -109,15 +110,15 @@
             
             <tr>
               <th class="nested twice">
-                <div class="color" style="background: #FF4D6F">&nbsp;</div>
-                По концу рабочего времени
+                <span class="color" style="background: #FF4D6F">&nbsp;</span>
+                По исчерпанию времени
               </th>
               <td>{{ output.quality.abs.shutdown }}</td>
             </tr>
           </tbody>
         </table>
         
-        <img alt="Качество работы системы" class="chart" style="width: 270px; height: 180px; margin: 9px 18px" src="http://chart.apis.google.com/chart?cht=p&amp;chs=270x180&amp;chl={{ output.quality.pc.accept }}%|{{ output.quality.pc.timeout }}%|{{ output.quality.pc.sizeout }}%|{{ output.quality.pc.shutdown }}%&amp;chco=008090,FBFF53,1560BD,FF4D6F&amp;chds=0,{{ output.quality.abs.total }}&amp;chd=t:{{ output.quality.abs.accept }},{{ output.quality.abs.timeout }},{{ output.quality.abs.sizeout }},{{ output.quality.abs.shutdown }}" />
+        <img alt="Качество работы системы" class="chart" style="width: 270px; height: 180px; margin: 9px 18px" src="http://chart.apis.google.com/chart?cht=p&amp;chs=270x180&amp;chl={{ output.quality.pc.accept }}%25|{{ output.quality.pc.timeout }}%25|{{ output.quality.pc.sizeout }}%25|{{ output.quality.pc.shutdown }}%25&amp;chco=008090,FBFF53,1560BD,FF4D6F&amp;chds=0,{{ output.quality.abs.total }}&amp;chd=t:{{ output.quality.abs.accept }},{{ output.quality.abs.timeout }},{{ output.quality.abs.sizeout }},{{ output.quality.abs.shutdown }}" />
       </div>
     </div>
     
@@ -126,7 +127,6 @@
       <div class="content">
         <img alt="Состояния системы по их вероятности" class="chart" src="http://chart.apis.google.com/chart?cht=lc&amp;chs=540x212&amp;chds=0,{{ output.load.longestState }}&amp;chxt=y,x&amp;chm=B,CCCCFF,0,0,0&amp;chxr=0,0,{{ output.load.longestState }}|1,0,{{ output.load.states|length|add:"-1" }}&amp;chco=1560BD&amp;chd=t:{{ output.load.states|join:"," }}">
         <p>По оси абсцисс отложено количество заявок, которое находится в системе. По оси ординат отложено время, в течение которого в системе было именно столько заявок, в процентах к общей продолжительности работы. <strong>FIXME</strong>.</p>
-        
       </div>
     </div>{% else %}
     <div id="content">

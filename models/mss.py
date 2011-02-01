@@ -18,8 +18,8 @@ conditions = {'mean' : c, 'from' : c, 'to' : c}
                },
 
         streams={   # Потоки
-                 'in':  distribution(conditions), # Входной поток заявок
-                 'out': distribution(conditions), # Выходной поток обслуживаний
+                 'in':  distribution(conditions, reverse = True), # Входной поток заявок
+                 'out': distribution(conditions, reverse = True), # Выходной поток обслуживаний
                  },
 
         faults={    # Неисправности
@@ -32,13 +32,27 @@ conditions = {'mean' : c, 'from' : c, 'to' : c}
         )
 def mss(channelsCount, queue, streams, faults, totalTime):
     u'Система массового обслуживания'
-
+    
+    def positive_only(generator):
+        'Фильтрует вывод генератора, выводя только положительные значения'
+        repeats = 0
+        while repeats < 100:
+            value = generator.next()
+            
+            if value > 0:
+                repeats = 0
+                yield value
+            else:
+                repeats += 1
+        
+        raise StopIteration
+    
     # Потоки
-    in_stream = streams['in']
-    out_stream = streams['out']
+    in_stream = positive_only(streams['in'])
+    out_stream = positive_only(streams['out'])
 
-    fault_stream = distributions.exponential(faults['problems'])
-    repair_stream = distributions.exponential(faults['repairs'])
+    fault_stream = positive_only(distributions.exponential(faults['problems']))
+    repair_stream = positive_only(distributions.exponential(faults['repairs']))
 
     # Действия
     mss.actions = {}

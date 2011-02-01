@@ -74,10 +74,14 @@ def array(value_type):
     
     return array
 
-def distribution(conditions = {'mean' : (rational, finite), 'from' : (rational, finite), 'to' : (rational, finite)}):
+def distribution(conditions = {'mean' : (rational, finite), 'from' : (rational, finite), 'to' : (rational, finite)}, reverse = False):
     def distribution(field):
         'Распределение'
-
+        
+        def rotate(values):
+            for variable, value in values.items():
+                values[variable] = 1 / float(value)
+        
         # Определим тип распределения
         types = ('exponential', 'equal', 'normal') # Допустимые типы
         try:
@@ -90,11 +94,18 @@ def distribution(conditions = {'mean' : (rational, finite), 'from' : (rational, 
 
         if t == 'exponential':
             values = validate(field, piece(conditions, ('mean', )))
+            if reverse:
+                rotate(values)
             return distributions.exponential(values['mean'])
         elif t == 'equal':
             values = validate(field, piece(conditions, ('from', 'to')))
+            if reverse:
+                rotate(values)
             return distributions.equal(*values.values())
         else:
+            values = validate(field, piece(conditions, ('mean', )))
+            if reverse:
+                rotate(values)
             return distributions.normal(float(field['mean']))
 
     return distribution
