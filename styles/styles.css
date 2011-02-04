@@ -416,4 +416,13 @@ table.properties .subsection td {
   font-size: 24px;
 }
 
+/* Permalink */
+
+.permalink {
+  float: left;
+  color: #CC0000;
+  font-weight: bold;
+  text-decoration: none;
+}
+
 

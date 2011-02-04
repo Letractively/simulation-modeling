@@ -5,7 +5,9 @@
 # Импорты
 from google.appengine.ext.webapp import template
 from django import template as django_template
-from cgi import escape
+import cgi
+
+escape = lambda value: cgi.escape(value, quote = True)
 
 class InputNode(django_template.Node):
     'Поле ввода'

@@ -34,7 +34,7 @@ def mss(channelsCount, queue, streams, faults, totalTime):
     u'Система массового обслуживания'
     
     def positive_only(generator):
-        'Фильтрует вывод генератора, выводя только положительные значения'
+        'Фильтрует вывод генератора, пропуская только положительные значения'
         repeats = 0
         while repeats < 100:
             value = generator.next()
@@ -248,9 +248,10 @@ def mss(channelsCount, queue, streams, faults, totalTime):
 
     # Значения в процентах
     relative = {}
-    for key, value in absolute.items():
-        if key != 'total':
-            relative[key] = round(value / float(absolute['total']) * 100, 2)
+    if absolute['total']:
+      for key, value in absolute.items():
+          if key != 'total':
+              relative[key] = round(value / float(absolute['total']) * 100, 2)
 
         # Среднее количество занятых каналов
     km = 0

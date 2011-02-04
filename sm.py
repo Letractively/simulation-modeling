@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-'Основной файл - обработчик запросов'
+'Simulation modeling' # Имя приложения
 
 # GAE API и стандартные библиотеки
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext.webapp import template
 import os, cgi
+escape = lambda value: cgi.escape(value, quote = True)
 
 # Подключение шаблонов
 template.register_template_library('templatetags.tags')
@@ -14,8 +15,8 @@ template.register_template_library('templatetags.tags')
 # Константы
 settings = {
     'app' : {
-        'name' : 'Simulation Modeling', # Полное имя приложения
-        'short' : 'SM',                     # Краткая аббревиатура
+        'name' : __doc__, # Полное имя приложения
+        'short' : 'SM',   # Краткая аббревиатура
     },
 }
 
@@ -59,8 +60,8 @@ class Model(webapp.RequestHandler):
     
     def request(self):
         self.response.headers['Content-Type'] = 'text/html'
-        
-        # Имя модели. FIXME некрасиво, на путях с аргументами не сработает.
+
+        # Имя модели
         name = self.request.path.split('/')[-1]
         
         # Загрузка модели
@@ -69,9 +70,17 @@ class Model(webapp.RequestHandler):
         
         template_file = 'templates/%s.html' % name
         template_parameters = { 'app' : settings['app'], 'title' : title }
-        if self.request.postvars:
+        
+        parameters = self.request.POST or self.request.GET
+        if parameters:
             # Аргументы моделирования
-            args = args_tree(self.request.postvars)
+            args = args_tree(parameters)
+            
+            # Permalink
+            template_parameters['permalink'] = escape('%s?%s' % (
+                self.request.path_url,
+                '&'.join('='.join(pair) for pair in parameters.items())
+            ))
             
             # Нормализация аргументов (удаление лишних)
             args = validator.normalize(args, model.accepts)
