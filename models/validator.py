@@ -20,6 +20,13 @@ def accepts(**p):
 
 # Предикаты
 
+def non_empty(x):
+  'Непустое значение'
+  if x:
+    return x
+  else:
+    raise ValueError(u'Пожалуйста, введите что-нибудь.')
+
 def integer(x):
     'Целое число'
     try:
@@ -66,13 +73,25 @@ def finite(x):
     else:
         return x
 
-def array(value_type):
-    'Массив значений типа value_type'
+def array(*conditions, **key_conditions):
+    'Массив значений, имеющих указанные типы'
     
-    def array(values):
-        return list(map(value_type, values))
+    def first(x):
+        return x[0]
+    
+    def second(x):
+        return x[1]
+    
+    if key_conditions:
+        conditions = key_conditions
+    
+    def array(x):
+        rules = dict((key, conditions) for key in x.keys())
+        y = validate(x, rules)
+        return map(second, sorted(y.items(), key=first))
     
     return array
+
 
 def distribution(conditions = {'mean' : (rational, finite), 'from' : (rational, finite), 'to' : (rational, finite)}, reverse = False):
     def distribution(field):

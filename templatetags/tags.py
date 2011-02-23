@@ -8,35 +8,69 @@ from django import template as django_template
 import cgi
 
 escape = lambda value: cgi.escape(value, quote = True)
+register = template.create_template_register()
+
+def tag(name, value, attributes):
+    'Сборка HTML-тега'
+    
+    attributes = u' ' + u' '.join(u'%s="%s"' % (key, value) for key, value in attributes.items())
+    
+    return (u'<%s%s>%s</%s>' % (name, attributes, value, name)).encode('utf-8')
 
 class InputNode(django_template.Node):
-    'Поле ввода'
-    def __init__(self, variable):
+    'Класс поля ввода <input>'
+    
+    def __init__(self, variable, name):
+        'Компиляция'
         self.variable = escape(variable)
+        self.name  = name
     
     def render(self, context):
-        # Значение
-        try:
-            value = escape(django_template.resolve_variable('input.' + self.variable, context))
-        except:
-            value = ''
+        'Вывод'
         
-        # Ошибка
+        #return str(dir(django_template))
+        
+        def resolve(v):
+            try:
+                if v[0] == '"' and v[-1] == '"':
+                    return escape(v[1:-1])
+                else:
+                    return django_template.resolve_variable(v, context)
+            except:
+                return u'nafig'
+        
+        # Извлечение значения
+        value = resolve(self.variable)
+
+        if hasattr(self.name, '__iter__'):
+            name = ''.join(map(unicode, map(resolve, self.name)))
+        else:
+            name = resolve(self.name)
+        
+        # Атрибуты тега
+        attributes = {
+            'id'    : name, 'name' : name,
+            'class' : 'text',    'type' : 'text',
+        }
+        
+        # Есть ли ошибка?
         try:
-            error = escape(unicode(django_template.resolve_variable('errors.' + self.variable, context)))
+            error = value['error']
         except:
             error = None
-        
-        # <input>
-        input_class = 'text' + (' error' if error else '')
-        input_tag = '<input class="%s" name="%s" id="%s" value="%s" />' % (input_class, self.variable, self.variable, value)
-        
-        # <div class="error"> and return result HTML
-        if error:
-            error_tag = '<div class="balloon" id="%s">%s</div>' % (self.variable + '.error', error.encode('utf-8'))
-            return error_tag + input_tag.encode('utf-8')
         else:
-            return input_tag.encode('utf-8')
+            attributes['class'] += ' error'
+            value = value['value']
+            error = tag('div', error, {'class' : 'balloon', 'id' : name + '.error'})
+        
+        attributes['value'] = value
+        field = tag('input', '', attributes)
+        
+        if error:
+            return error + field
+        else:
+            return field
+
 
 class DistributionNode(django_template.Node):
     'Распределение'
@@ -102,22 +136,34 @@ class DistributionNode(django_template.Node):
         
         return subsection + tr_central + tr_range
 
+@register.tag
 def input(parser, token):
-    'Поле ввода'
-    bits = token.split_contents()
-    variable = bits[1]
-    if variable[0] == variable[-1] and variable[0] in ('"', "'"):
-        return InputNode(str(variable[1:-1]))
-    else:
-        raise Exception('In input tag, you should enclose varname in quotes!')
+    'Тег {% input variable "name" %}'
+    
+    try:
+        tokens = token.split_contents()[1:]
+        variable, name = tokens[0], tokens[1:]
+    except:
+        raise django_template.TemplateSyntaxError, "%r tag requires exactly two arguments, %s found" % (token.contents.split()[0], token.split_contents())
+    
+    return InputNode(variable, name)
 
+@register.filter
+def values_sort(value):
+    'Всякая фигня - написать и забыть. Очень некрасивая штука, до невозможности некрасивая. Пакость.'
+    def first(x):
+        return x[0]
+    
+    def second(x):
+        return x[1]
+    
+    return map(second, sorted(value.items(), key=first))
+
+@register.tag
 def distribution(parser, token):
     'Поле ввода'
     bits = token.split_contents()
     (label, variable) = bits[1:]
     return DistributionNode(str(label[1:-1]), str(variable[1:-1]))
 
-register = template.create_template_register()
-register.tag(input)
-register.tag(distribution)
 

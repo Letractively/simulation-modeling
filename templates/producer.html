@@ -1,0 +1,154 @@
+{% extends "model.html" %}
+{% block content %}
+  <div class="block aside left">
+    <div class="title">Параметры</div>
+    <form action="/producer" method="post">
+      <table class="properties">
+        <tr>
+          <th class="label">Поступает в час:</th>
+          <td>
+            {% input input.instream "instream" %}
+            <span class="unit">заявок</span>
+          </td>
+        </tr>
+        <tr>
+          <th class="label">Продолжительность:</th>
+          <td>
+            {% input input.total_time "total_time" %}
+            <span class="unit">ч</span>
+          </td>
+        </tr>
+        
+        <tr><th colspan="2" class="section">Операции</th></tr>
+        <tr>
+          <th class="label">Разброс</th>
+          <td>{% input input.deviation "deviation" %}</td>
+        </tr>
+        <tr>
+          <th class="table label">Имя</th><th class="table label" style="border-right: none">Время</th>
+        </tr>
+        
+        <tr>
+          <th class="label">Цех 1</th>
+          <td>
+            {% input input.operations.0 "operations.0" %}
+            <span class="unit">ч</span>
+          </td>
+        </tr>
+        
+        {% for operation in input.operations|values_sort %}
+          {% if not forloop.first %}
+            <tr>
+              <th class="label">Цех {{ forloop.counter }}</th>
+              <td>
+                {% input operation "operations." forloop.counter0 %}
+                <span class="unit">ч</span>
+              </td>
+            </tr>
+          {% endif %}
+        {% endfor %}
+        <tr><th class="label" colspan="2"><a href="#" onclick="insert_operation(this)">Добавить цех</a></th></tr>
+
+        <tr><th colspan="2" class="section">Доходы и расходы</th></tr>
+        <tr>
+          <th class="label">Средняя прибыль</th>
+          <td>
+            {% input input.income "income" %}
+            <span class="unit">руб</span>
+          </td>
+        </tr>
+        <tr>
+          <th class="label">Издержки</th>
+          <td>
+            {% input input.costs "costs" %}
+            <span class="unit">руб</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="submit" colspan="2">
+            <a href="{{ permalink }}" class="permalink">Ссылка</a>
+            <input type="submit" value="Считать" />
+          </td>
+        </tr>
+      </table>
+    </form>
+  </div>
+  
+  <div id="output" class="aside-left">
+    {% if output %}<div class="block">
+      <div class="title">Качество работы системы</div>
+      <div class="content" style="padding-top: 18px">
+        <table class="left">
+          <caption>Заявки</caption>
+          <tbody>
+            <tr>
+              <th>Всего</th>
+              <td>
+                {{ output.quality.abs.total }}
+                <span class="unit">заявок</span>
+              </td>
+            </tr>
+            <tr>
+              <th class="nested">
+                <span class="color" style="background: #008090">&nbsp;</span>
+                Принято
+              </th>
+              <td>
+                {{ output.quality.abs.processed }}
+                <span class="unit">заявок</span>
+              </td>
+            </tr>
+            <tr>
+              <th class="nested">
+                <span class="color" style="background: #FF4D6F">&nbsp;</span>
+                Отклонено
+              </th>
+              <td>
+                {{ output.quality.abs.rejected }}
+                <span class="unit">заявок</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <img alt="Качество работы системы" class="chart right" style="width: 270px; height: 180px; margin: 9px 18px" src="http://chart.apis.google.com/chart?cht=p&amp;chs=270x180&amp;chl={{ output.quality.pc.processed }}%25|{{ output.quality.pc.rejected }}%25&amp;chco=008090,FF4D6F&amp;chds=0,{{ output.quality.abs.total }}&amp;chd=t:{{ output.quality.abs.processed }},{{ output.quality.abs.rejected }}" />
+        
+        <table>
+          <caption>Прибыль</caption>
+          <tbody>
+            <tr>
+              <th>Полная прибыль</th>
+              <td>
+                {{ output.balance.processed }}
+                <span class="unit">руб</span>
+              </td>
+            </tr>
+            <tr>
+              <th>С учётом издержек</th>
+              <td>
+                {{ output.balance.total }}
+                <span class="unit">руб</span>
+              </td>
+            </tr>
+            <tr>
+              <th>Недополученная прибыль</th>
+              <td>
+                {{ output.balance.rejected }}
+                <span class="unit">руб</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+      </div>
+    </div>
+    
+    {% else %}
+    <div id="content">
+      <h1>Модель производственной фирмы</h1>
+      <p>Модель производственной фирмы описывает последовательность операций, необходимых для изготовления изделия на фабрике.</p>
+      <p><em><strong>TODO:</strong> не забыть воды налить</em>
+    </div>
+    {% endif %}
+  </div>
+{% endblock %}

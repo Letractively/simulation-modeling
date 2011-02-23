@@ -2,7 +2,7 @@
 
 'Simulation modeling' # Имя приложения
 
-# GAE API и стандартные библиотеки
+# GAE API и стандартные модули
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext.webapp import template
@@ -21,27 +21,8 @@ settings = {
 }
 
 # Модули приложения
-import models
+import models, tree
 from models import validator
-
-def args_tree(args):
-    'Превращение списка аргументов в дерево'
-    
-    tree = {}
-    for arg, value in args.items():
-        path = arg.split('.')
-        
-        layer = tree
-        for token in path[:-1]:
-            if token not in layer or type(layer[token]) != dict:
-                layer[token] = {}
-            layer = layer[token]
-    
-        if len(value) == 1:
-            value = value[0]
-        layer[path[-1]] = value
-    
-    return tree
 
 class MainPage(webapp.RequestHandler):
     'Список моделей'
@@ -68,13 +49,15 @@ class Model(webapp.RequestHandler):
         model = getattr(__import__('models.' + name, fromlist = ['models']), name)
         title = model.__doc__
         
+        # Шаблон и его параметры
         template_file = 'templates/%s.html' % name
         template_parameters = { 'app' : settings['app'], 'title' : title }
         
+        # Входные параметры
         parameters = self.request.POST or self.request.GET
         if parameters:
             # Аргументы моделирования
-            args = args_tree(parameters)
+            args = tree.from_leaves(parameters)
             
             # Permalink
             template_parameters['permalink'] = escape('%s?%s' % (
@@ -86,17 +69,19 @@ class Model(webapp.RequestHandler):
             args = validator.normalize(args, model.accepts)
             
             # Валидация аргументов
+            errors = {}
             if args:
               try:
                   parameters = validator.validate(args, model.accepts)
               except Exception, error:
                   errors = error.message
-                  template_parameters['errors'] = errors
               else:
-                template_parameters['output'] = model(**parameters)
+                  template_parameters['output'] = model(**parameters)
             
-            #self.response.out.write(cgi.escape(str(self.request.postvars)))
-            template_parameters['input'] = args
+            #self.response.out.write(errors)
+            
+            # Входные параметры
+            template_parameters['input'] = tree.recursive_map(lambda arg, error: {'value' : arg, 'error' : error} if error else arg, args, errors)
 
         self.response.out.write(template.render(template_file, template_parameters))
     

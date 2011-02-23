@@ -27,4 +27,4 @@ class scheduleTest(unittest.TestCase):
     self.assertEqual(s.next(), e3)    
 
 if __name__ == '__main__':
-  unittest.main()
+    unittest.main()

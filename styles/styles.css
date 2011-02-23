@@ -355,11 +355,30 @@ table.properties .subsection td {
   padding-right: 5px;
 }
 
+table.properties th.label.table {
+  text-align: left;
+  color: #CC0000;
+}
+
+table.properties th.label.table input.text {
+  text-align: left;
+  background: none;
+  
+  color: #999999;
+  font-weight: bold;
+}
+
 /* Unit */
 
 .unit {
-  margin-left: 9px;
   color: #777777;
+  width: 36px;
+  margin-left: 3px;
+  text-align: left;
+}
+
+.properties .unit {
+  margin-left: 9px;
   width: 36px;
   margin-left: -36px;
   margin-right: -40px;
