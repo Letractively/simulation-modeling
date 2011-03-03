@@ -1,0 +1,28 @@
+{% extends "sm.html" %}
+
+{% block title %}{{ app.name }}{% endblock %}
+
+{% block appname %}{{ app.name }}{% endblock %}
+
+{% block content %}
+<div class="block aside right">
+  <div class="title">Что это?</div>
+  <div class="content">
+    <p><strong>Simulation Modeling</strong> &mdash; коллекция имитационных моделей для студентов, изучающих курс <a href="http://fdo.tusur.ru">ФДО ТУСУР</a> <strong>"Имитационное моделирование экономических процессов"</strong> (А. А. Мицель, Е. Б. Грибанова. Томск, ТМЦ ДО, 2007).</p>
+  </div>
+</div>
+
+<div id="content">
+  <h1>Список моделей</h1>
+    <ul id="models" class="clear">{% for model, caption in models.items() %}
+    <li>
+      <a href="/{{ model }}">
+        <span class="inner">
+          <img alt="{{ caption }}" src="/images/models/{{ model }}.png" />
+          <span class="caption">{{ caption }}</span>
+        </span>
+      </a>
+    </li>
+  {% endfor %}</ul>
+</div>
+{% endblock %}

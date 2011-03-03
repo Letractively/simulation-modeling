@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-'Утилиты'
+'Процедуры для работы с деревьями'
 
-
-def from_leaves(leaves):
+def from_materialized_path(leaves):
     'Превращение списка листьев в дерево'
     
     # Результирующее дерево

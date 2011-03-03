@@ -10,13 +10,6 @@ import cgi
 escape = lambda value: cgi.escape(value, quote = True)
 register = template.create_template_register()
 
-def tag(name, value, attributes):
-    'Сборка HTML-тега'
-    
-    attributes = u' ' + u' '.join(u'%s="%s"' % (key, value) for key, value in attributes.items())
-    
-    return (u'<%s%s>%s</%s>' % (name, attributes, value, name)).encode('utf-8')
-
 class InputNode(django_template.Node):
     'Класс поля ввода <input>'
     
@@ -98,12 +91,17 @@ class DistributionNode(django_template.Node):
         # <select> tag
         select = '<select id="%s.type" name="%s.type" onchange="distribution_switch(this)">%s</select>' % (self.variable, self.variable, options)
         
+        try:
+            value = django_template.resolve_variable(self.variable, context)
+        except:
+            value = {'from' : u'', 'to' : u'', 'mean' : u''}
+        
         # <input> for central value
-        input_central = InputNode(self.variable + '.mean').render(context)
+        input_central = InputNode(value['mean'], self.variable + '.mean').render(context)
         
         # <input>-s for range
-        input_from = InputNode(self.variable + '.from').render(context)
-        input_to   = InputNode(self.variable + '.to').render(context)
+        input_from = InputNode(value['from'], self.variable + '.from').render(context)
+        input_to   = InputNode(value['to'], self.variable + '.to').render(context)
         
         # <tr> - subsection
         subsection = u'''<tr class="subsection">
@@ -136,7 +134,7 @@ class DistributionNode(django_template.Node):
         
         return subsection + tr_central + tr_range
 
-@register.tag
+#@register.tag
 def input(parser, token):
     'Тег {% input variable "name" %}'
     
@@ -148,22 +146,95 @@ def input(parser, token):
     
     return InputNode(variable, name)
 
+#@register.tag
+def distribution(parser, token):
+    'Поле ввода'
+    bits = token.split_contents()
+    (label, variable) = bits[1:]
+    return DistributionNode(str(label[1:-1]), str(variable[1:-1]))
+
+def tag(name, value, attributes):
+    'Сборка HTML-тега'
+    
+    attributes = u' ' + u' '.join(u'%s="%s"' % (key, value) for key, value in attributes.items())
+    
+    return (u'<%s%s>%s</%s>' % (name, attributes, value, name)).encode('utf-8')
+
 @register.filter
-def values_sort(value):
-    'Всякая фигня - написать и забыть. Очень некрасивая штука, до невозможности некрасивая. Пакость.'
+def concatenate(arg1, arg2):
+    'Конкатенация'
+    return u''.join(map(unicode, (arg1, arg2)))
+
+@register.filter
+def array(value):
+    'Преобразование словаря к сортированному по ключам списку значений'
     def first(x):
         return x[0]
     
     def second(x):
         return x[1]
     
-    return map(second, sorted(value.items(), key=first))
+    try:
+      return map(second, sorted(value.items(), key=first))
+    except:
+      return []
 
-@register.tag
-def distribution(parser, token):
+@register.filter
+def finput(value, name):
     'Поле ввода'
-    bits = token.split_contents()
-    (label, variable) = bits[1:]
-    return DistributionNode(str(label[1:-1]), str(variable[1:-1]))
+    
+    # Атрибуты тега
+    attributes = {
+        'id'    : name, 'name' : name,
+        'class' : 'text',    'type' : 'text',
+    }
+    
+    # Есть ли ошибка?
+    try:
+        error = value['error']
+    except:
+        error = None
+    else:
+        attributes['class'] += ' error'
+        value = value['value']
+        error = tag('div', error, {'class' : 'balloon', 'id' : name + '.error'})
+    
+    attributes['value'] = value
+    field = tag('input', '', attributes)
+    
+    if error:
+        return error + field
+    else:
+        return field
+
+@register.simple_tag
+def input(name):
+    'Поле ввода по имени name'
+    
+    value = u''
+    
+    # Атрибуты тега
+    attributes = {
+        'id'    : name, 'name' : name,
+        'class' : 'text',    'type' : 'text',
+    }
+    
+    # Есть ли ошибка?
+    try:
+        error = value['error']
+    except:
+        error = None
+    else:
+        attributes['class'] += ' error'
+        value = value['value']
+        error = tag('div', error, {'class' : 'balloon', 'id' : name + '.error'})
+    
+    attributes['value'] = value
+    field = tag('input', '', attributes)
+    
+    if error:
+        return error + field
+    else:
+        return field
 
 

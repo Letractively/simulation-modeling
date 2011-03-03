@@ -8,7 +8,7 @@ sys.path.append(os.path.dirname(tests))
 
 import tree, unittest
 
-class FromLeavesTest(unittest.TestCase):
+class FromMaterializedPathTest(unittest.TestCase):
     'Тест для процедуры from_leaves'
     
     def test_positive(self):
@@ -30,7 +30,7 @@ class FromLeavesTest(unittest.TestCase):
             'd' : 'sdf',
         }
         
-        self.assertEqual(tree.from_leaves(input), output)
+        self.assertEqual(tree.from_materialized_path(input), output)
     
 class RecursiveMapTest(unittest.TestCase):
     'Рекурсивный map'
@@ -73,7 +73,7 @@ class RecursiveMapTest(unittest.TestCase):
         }
     
         self.assertEqual(tree.recursive_map(f, tree1, tree2), output)
-    
+
 if __name__ == '__main__':
     unittest.main()
 

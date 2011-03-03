@@ -1,0 +1,25 @@
+{% macro input(value, name, label, unit, class) -%}
+    <div class="row{% if class is defined %} {{ class }}{% endif %}">
+        {% if label is defined %}
+            <label for="{{ name }}">{{ label }}</label>
+        {% endif %}
+        
+        <span class="unit">{{ unit|d('&nbsp;') }}</span>
+    
+        {% if value is defined %}
+            {% if value.error is defined %}
+                <div class="balloon" id="{{ name }}.error" name="{{ name }}.error">{{ value.error }}</div>
+                <input type="text" id="{{ name }}" name="{{ name }}" class="text error" value="{{ value.value|e }}" />
+            {% else %}
+                <input type="text" id="{{ name }}" name="{{ name }}" class="text" value="{{ value|e }}" />
+            {% endif %}
+        {% else %}
+            <input type="text" id="{{ name }}" name="{{ name }}" class="text" value="" />
+        {% endif %}
+    </div>
+{%- endmacro %}
+
+{% macro color(color) -%}
+    <span class="color" style="background: {{ color }}">&nbsp;</span>
+{%- endmacro %}
+

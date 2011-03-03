@@ -1,0 +1,20 @@
+{% extends "sm.html" %}
+
+{% block title -%}
+  {{ title }} | {{ app.short }}
+{%- endblock %}
+
+{% block appname -%}
+  <a href="/" title="{{ app.name }}">{{ app.short }}</a>
+{%- endblock %}
+
+{% block content %}
+  {% block input %}{% endblock %}
+  <div id="output" class="aside-left">
+      {% if output %}
+        {% block output %}{% endblock %}
+      {% else %}
+        {% block about %}{% endblock %}
+      {% endif %}
+  </div>
+{% endblock %}

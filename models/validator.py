@@ -34,12 +34,14 @@ def integer(x):
     except:
         raise ValueError(u'Пожалуйста, введите целое число.')
 
+
 def rational(x):
     'Число'
     try:
         return float(x)
     except:
         raise ValueError(u'Пожалуйста, введите число.')
+
 
 def unsigned(x):
     'Число x не отрицательно'
@@ -49,6 +51,7 @@ def unsigned(x):
     else:
       raise ValueError(u'Пожалуйста, введите неотрицательное число.')
 
+
 def positive(x):
     'Число x положительно'
     
@@ -57,13 +60,14 @@ def positive(x):
     else:
       raise ValueError(u'Пожалуйста, введите положительное число.')
 
+
 def probability(x):
     'Вероятность'
-    x = rational(x)
     if 0 <= x <= 1:
         return x
     else:
         raise ValueError(u'Пожалуйста, введите число из интервала [0, 1].')
+
 
 def finite(x):
     'Конечность аргумента'
@@ -77,18 +81,26 @@ def array(*conditions, **key_conditions):
     'Массив значений, имеющих указанные типы'
     
     def first(x):
+        'Первый элемент списка'
         return x[0]
     
     def second(x):
+        'Второй элемент списка'
         return x[1]
     
+    # Честно - сам не знаю, что это и зачем
     if key_conditions:
         conditions = key_conditions
     
-    def array(x):
-        rules = dict((key, conditions) for key in x.keys())
-        y = validate(x, rules)
-        return map(second, sorted(y.items(), key=first))
+    def array(input):
+        # Правила
+        rules = dict((key, conditions) for key in input.keys())
+        
+        # Очищенная ветка дерева
+        output = validate(input, rules)
+        
+        # Возвращаем обе ветки, преобразованные к форме отсортированного по ключам списка
+        return map(second, sorted(output.items(), key=first))
     
     return array
 
@@ -195,8 +207,3 @@ square = lambda x: x * x
 def piece(dictionary, keys):
     'Slicing для словарей'
     return dict((key, dictionary[key]) for key in keys if key in dictionary)
-
-def stream_filter(stream, conditions, limit = 100):
-    'Фильтрация потока по условиям'
-
-    pass

@@ -15,97 +15,97 @@
 /* Page cleanup */
 
 body {
-  padding: 0;
-  margin: 0;
-  
-  line-height: 18px;
-  font-family: Times New Roman;
-  font-size: 14px;
-  
-  background: #CCCCFF;
+    padding: 0;
+    margin: 0;
+    
+    line-height: 18px;
+    font-family: Times New Roman;
+    font-size: 14px;
+    
+    background: #CCCCFF;
 }
 
 img {
-  border: none;
+    border: none;
 }
 
 /* Header */
 
 #header {
-  background: #8F2B3E;
-  background: url(/images/header.png) no-repeat;
-  border-top-left-radius: 18px;
-  border-top-right-radius: 18px;
+    background: #8F2B3E;
+    background: url(/images/header.png) no-repeat;
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
 }
 
 #appname, #title {
-  font-size: 27px;
-  line-height: 36px;
-  padding: 18px;
-  font-family: Arial;
-  color: white;
-  display: inline-block;
-  margin-bottom: -1px;
+    font-size: 27px;
+    line-height: 36px;
+    padding: 18px;
+    font-family: Arial;
+    color: white;
+    display: inline-block;
+    margin-bottom: -1px;
 }
 
-#appname a {
-  font-weight: bold;
-  color: white;
-  text-decoration: none;
+#appname a, #appname {
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
 }
 
 #sinusoid {
-  background: url(/images/sinusoid.png) repeat-x;
-  height: 35px;
-  width: 100%;
+    background: url(/images/sinusoid.png) repeat-x;
+    height: 35px;
+    width: 100%;
 }
 
 /* Main content */
 
 #page {
-  width: 950px;
-  position: absolute;
-  left: 50%;
-  margin-left: -480px;
-  margin-top: 20px;
-  background: white;
-  padding-bottom: 36px;
-  
-  /*border: solid 1px #CCCCCC;*/
-  border-radius: 18px;
-  
-  box-shadow: 0px 3px 9px #AAAADD, inset 0px 0px 9px #CCCCFF;
-  -moz-box-shadow: 0px 3px 9px #CCCCCC, inset 0px 0px 9px #CCCCCC;
-  -o-box-shadow: 0px 3px 9px #CCCCCC, inset 0px 0px 9px #CCCCCC;
-  
-  /* Commented out for Chrome due to bug:
-  http://code.google.com/p/chromium/issues/detail?id=25334
-  -webkit-box-shadow: 0px 3px 9px #CCCCCC, inset 0px 0px 9px #CCCCCC; */
+    width: 950px;
+    position: absolute;
+    left: 50%;
+    margin-left: -480px;
+    margin-top: 20px;
+    background: white;
+    padding-bottom: 36px;
+    
+    /*border: solid 1px #CCCCCC;*/
+    border-radius: 18px;
+    
+    box-shadow: 0px 3px 9px #AAAADD, inset 0px 0px 9px #CCCCFF;
+    -moz-box-shadow: 0px 3px 9px #CCCCCC, inset 0px 0px 9px #CCCCCC;
+    -o-box-shadow: 0px 3px 9px #CCCCCC, inset 0px 0px 9px #CCCCCC;
+    
+    /* Commented out for Chrome due to bug:
+    http://code.google.com/p/chromium/issues/detail?id=25334
+    -webkit-box-shadow: 0px 3px 9px #CCCCCC, inset 0px 0px 9px #CCCCCC; */
 }
 
 #main {
-  padding: 9px;
+    padding: 9px;
 }
 
 #content {
-  margin: 9px;
-  padding: 0 9px;
+    margin: 9px;
+    padding: 0 9px;
 }
 
 .aside-left {
-  padding-left: 288px;
+    padding-left: 288px;
 }
 
 /* Text formatting */
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: Arial;
-  color: #CC0000;
-  line-height: 36px;
-  margin: 9px 0;
-  padding: 0;
-  
-  text-shadow: 1px 1px 2px #CCCCCC;
+    font-family: Arial;
+    color: #CC0000;
+    line-height: 36px;
+    margin: 9px 0;
+    padding: 0;
+    
+    text-shadow: 1px 1px 2px #CCCCCC;
 }
 
 h1 { font-size: 24px; }
@@ -116,332 +116,350 @@ h5 { font-size: 16px; }
 h6 { font-size: 14px; }
 
 p {
-  margin: 9px 0;
-  padding: 0;
+    margin: 9px 0;
+    padding: 0;
 }
 
 strong {
-  color: #CC0000;
+    color: #CC0000;
 }
 
 img {
-  border: 0;
+    border: 0;
 }
 
 /* Block */
 
 .block {
-  border: solid 1px #CCCCCC;
-  border-radius: 18px;
-  box-shadow: 0px 1px 5px #CCCCCC;
-  margin: 9px;
+    border: solid 1px #CCCCCC;
+    border-radius: 18px;
+    box-shadow: 0px 1px 5px #CCCCCC;
+    margin: 9px;
 }
 
 .block .title {
-  font-family: Arial;
-  color: #CC0000;
-  font-weight: bold;
-  padding: 8px 18px;
-  padding-top: 9px;
-  
-  border-top-right-radius: 18px;
-  border-top-left-radius: 18px;
-  
-  border-bottom: solid 1px #CCCCCC;
+    font-family: Arial;
+    color: #CC0000;
+    font-weight: bold;
+    padding: 8px 18px;
+    padding-top: 9px;
+    
+    border-top-right-radius: 18px;
+    border-top-left-radius: 18px;
+    
+    border-bottom: solid 1px #CCCCCC;
 
-  background: #EEEEEE;
-  box-shadow: inset 0px 9px 18px -3px white;
-  -webkit-box-shadow: inset 0px 9px 18px -3px white;
-  -moz-box-shadow: inset 0px 9px 18px -3px white;
-  -o-box-shadow: inset 0px 9px 18px -3px white;
+    background: #EEEEEE;
+    box-shadow: inset 0px 9px 18px -3px white;
+    -webkit-box-shadow: inset 0px 9px 18px -3px white;
+    -moz-box-shadow: inset 0px 9px 18px -3px white;
+    -o-box-shadow: inset 0px 9px 18px -3px white;
 }
 
 .block .content {
-  padding: 9px 18px;
+    padding: 9px 18px;
 }
 
 /* Aside block */
 
 .aside {
-  width: 270px;
+    width: 270px;
 }
 
 /* Alignment */
 
 .right { float: right }
-.left  { float: left }
+.left    { float: left }
 .clear:after {
-  content: ".";
-  display: block;
-  height: 0;
-  clear: both;
-  visibility: hidden;
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
 }
 
 /* Models list */
 
 ul#models {
-  list-style-type: none;
-  margin: 9px 0;
-  padding: 0;
+    list-style-type: none;
+    margin: 9px 0;
+    padding: 0;
 }
 
 ul#models li {
-  float: left;
-  width: 180px;
+    float: left;
+    width: 180px;
 }
 
 ul#models li .inner {
-  text-align: center;
-  border: solid 1px #CCCCCC;
-  border-radius: 9px;
-  box-shadow: 0px 1px 5px #CCCCCC;
-  margin: 9px 0;
-  margin-right: 18px;
+    text-align: center;
+    border: solid 1px #CCCCCC;
+    border-radius: 9px;
+    box-shadow: 0px 1px 5px #CCCCCC;
+    margin: 9px 0;
+    margin-right: 18px;
 }
 
 ul#models li .inner:hover {
-  background: #EEEEEE;
+    background: #EEEEEE;
 }
 
 ul#models li .inner .caption {
-  padding: 9px;
-  background: #EEEEEE;
-  border-bottom-left-radius: 9px;
-  border-bottom-right-radius: 9px;
-  border-top: solid 1px #CCCCCC;
+    padding: 9px;
+    background: #EEEEEE;
+    border-bottom-left-radius: 9px;
+    border-bottom-right-radius: 9px;
+    border-top: solid 1px #CCCCCC;
 }
 
 /* adjust a 128x128 picture to the grid */
 ul#models li img {
-  margin-top: 7px;
-  margin-bottom: 4px;
+    margin-top: 7px;
+    margin-bottom: 4px;
 }
 
 ul#models li a {
-  color: #CC0000;
-  font-family: Arial;
-  text-decoration: none;
-  text-shadow: 1px 1px 2px #CCCCCC;
+    color: #CC0000;
+    font-family: Arial;
+    text-decoration: none;
+    text-shadow: 1px 1px 2px #CCCCCC;
 }
 
 ul#models li span {
-  display: block;
+    display: block;
 }
 
 /* Tables */
 
 table {
-  font-size: 12px;
-  border-collapse: collapse;
-  
-  margin: 9px 0;
-  font-family: Arial;
+    font-size: 12px;
+    border-collapse: collapse;
+    
+    margin: 9px 0;
+    margin-bottom: 8px;
+    font-family: Arial;
 }
 
 table td, table th, table caption {
-  border: solid 1px #CCCCCC;
-  height: 27px;
-  padding: 0 9px;
+    border: solid 1px #CCCCCC;
+    padding: 9px;
+    padding-top: 8px;
 }
 
 table td {
-  text-align: right;
+    text-align: right;
 }
 
 table th {
-  text-align: left;
+    text-align: left;
 }
 
 table th, table caption {
-  color: #999999;
-  background: #EEEEEE;
+    color: #999999;
+    background: #EEEEEE;
 }
 
 table th.section, table caption {
-  color: #CC0000;
-  border-right: 0;
-  padding-left: 9px;
-  font-weight: bold;
-  
-  box-shadow: inset 0px 9px 18px -3px white;
-  -webkit-box-shadow: inset 0px 9px 18px -3px white;
-  -moz-box-shadow: inset 0px 9px 18px -3px white;
-  -o-box-shadow: inset 0px 9px 18px -3px white;
+    color: #CC0000;
+    border-right: 0;
+    padding-left: 9px;
+    font-weight: bold;
+    
+    box-shadow: inset 0px 9px 18px -3px white;
+    -webkit-box-shadow: inset 0px 9px 18px -3px white;
+    -moz-box-shadow: inset 0px 9px 18px -3px white;
+    -o-box-shadow: inset 0px 9px 18px -3px white;
 }
 
 table caption {
-  border: solid 1px #CCCCCC;
-  border-bottom: 0;
-  line-height: 26px;
-  
-  border-top-left-radius: 18px;
-  border-top-right-radius: 18px;
+    border: solid 1px #CCCCCC;
+    border-bottom: 0;
+    
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
 }
 
 .nested {
-  padding-left: 18px;
+    padding-left: 18px;
 }
 
 .nested.twice {
-  padding-left: 36px;
+    padding-left: 36px;
 }
 
 /* Properties editor */
 
 form {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
-table.properties {
-  width: 100%;
-  margin: 0;
-  padding: 0;
+.block.properties {
+    background: #EEEEEE;
 }
 
-table.properties td {
-  padding-right: 50px;
+form.properties, form.properties * {
+    font-family: Arial;
+    font-size: 12px;
 }
 
-table.properties td,
-table.properties th {
-  border: 0;
-  border-bottom: solid 1px #CCCCCC;
+form.properties .row,
+form.properties .legend {
+    padding: 8px 9px;
+    padding-top: 9px;
+    border-bottom: solid 1px #CCCCCC;
 }
 
-table.properties th.label {
-  text-align: right;
-  padding: 0 9px;
-  border-right: solid 1px #CCCCCC;
+form.properties .row:last-child {
+    border-bottom: none;
 }
 
-table.properties input.text,
-table.properties select {
-  margin: 0;
-  width: 100%;
-  padding: 1px;
-  
-  text-align: right;
-  float: left;
-  border: 0;
+form.properties .row label {
+    color: #777777;
+    font-weight:bold;
+    
+    display: inline-block;
 }
 
-table.properties select {
-  text-align: left;
-  background: none;
+form.properties .row input.text {
+    border: solid 1px #CCCCCC;
+    border-radius: 3px;
+    color: #CC0000;
+    text-align: right;
+    
+    width: 5em;
+    float: right;
 }
 
-table.properties input.text:focus,
-table.properties select:focus {
-  outline: none;
+form.properties .row .unit {
+    float: right;
+    padding-left: 9px;
 }
 
-table.properties .submit {
-  text-align: right;
-  border-bottom: 0;
-  padding-right: 18px;
+form.properties fieldset {
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-bottom: solid 1px #CCCCCC;
 }
 
-table.properties .subsection,
-table.properties .subsection td,
-table.properties .subsection select,
-table.properties .subsection select:focus {
-  background: #EEEEEE;
-  color: #CC0000;
+form.properties fieldset:last-child {
+    border-bottom: none;
 }
 
-table.properties .subsection td {
-  padding-right: 5px;
+form.properties fieldset .legend {
+    color: #CC0000;
+    font-weight: bold;
+    
+    box-shadow: inset 0px 9px 18px -3px white;
+    -webkit-box-shadow: inset 0px 9px 18px -3px white;
+    -moz-box-shadow: inset 0px 9px 18px -3px white;
+    -o-box-shadow: inset 0px 9px 18px -3px white;
 }
 
-table.properties th.label.table {
-  text-align: left;
-  color: #CC0000;
+form.properties fieldset .row {
+    padding-left: 18px;
 }
 
-table.properties th.label.table input.text {
-  text-align: left;
-  background: none;
-  
-  color: #999999;
-  font-weight: bold;
+form.properties .row.submit {
+    text-align: right;
+}
+
+/* Button span-s */
+.button {
+    display: inline-block;
+    
+    height: 12px;
+    width: 12px;
+    
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+}
+
+.button.remove {
+    background-image: url(/images/buttons/remove.png);
+    margin-right: 9px;
+}
+
+.button.add {
+    background-image: url(/images/buttons/add.png);
 }
 
 /* Unit */
 
 .unit {
-  color: #777777;
-  width: 36px;
-  margin-left: 3px;
-  text-align: left;
+    color: #777777;
+    width: 36px;
+    margin-left: 3px;
+    text-align: left;
+    display: inline-block;
 }
 
-.properties .unit {
-  margin-left: 9px;
-  width: 36px;
-  margin-left: -36px;
-  margin-right: -40px;
-  display: inline-block;
-  text-align: left;
+table.properties .unit {
+    margin-left: 9px;
+    width: 36px;
+    margin-left: -36px;
+    margin-right: -40px;
+    display: inline-block;
+    text-align: left;
 }
 
 /* Balloon */
 
 .balloon {
-  color: white;
-  background: #CC0000;
-  font-weight: bold;
-  font-size: 12px;
-  line-height: 14px;
-  
-  width: 180px;
-  position: relative;
-  left: 36px;
-  top: 27px;
-  height: 30px;
-  padding: 3px 9px;
-  margin-top: -36px;
-  margin-right: -180px;
-  z-index: 10;
-  
-  overflow: hidden;
-  text-align: left;
-  float: right;
-  
-  border-radius: 9px;
-  box-shadow: 0px 1px 5px #CCCCCC;
-  box-shadow: inset 0px 9px 18px -9px white;
+    color: white;
+    background: #CC0000;
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 14px;
+    
+    width: 180px;
+    position: relative;
+    left: 36px;
+    top: 27px;
+    height: 30px;
+    padding: 3px 9px;
+    margin-top: -36px;
+    margin-right: -180px;
+    z-index: 10;
+    
+    overflow: hidden;
+    text-align: left;
+    float: right;
+    
+    border-radius: 9px;
+    box-shadow: 0px 1px 5px #CCCCCC;
+    box-shadow: inset 0px 9px 18px -9px white;
 }
 
 /* Color */
 
 .color {
-  height: 18px;
-  width: 18px;
-  display: inline-block;
-  margin-right: 9px;
+    height: 18px;
+    width: 18px;
+    display: inline-block;
+    margin-right: 9px;
 }
 
 /* Error message */
 
 .error-message {
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  vertical-align: middle;
-  
-  color: #CCCCCC;
-  font-size: 24px;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    vertical-align: middle;
+    
+    color: #CCCCCC;
+    font-size: 24px;
 }
 
 /* Permalink */
 
 .permalink {
-  float: left;
-  color: #CC0000;
-  font-weight: bold;
-  text-decoration: none;
+    float: left;
+    color: #CC0000;
+    font-weight: bold;
+    text-decoration: none;
 }
 
 

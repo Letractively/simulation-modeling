@@ -17,39 +17,72 @@ function distribution_switch(selector) {
     }
 }
 
-function insert_operation(button) {
-    /* Добавление нового цеха в модели производственной фирмы */
+function add_operation(buttonNode, child) {
+    /* Добавление цеха */
     
-    var footer = button.parentNode.parentNode;
-    var index  = footer.rowIndex;
-    var table  = footer.parentNode.parentNode;
+    /* Fieldset */
+    var fieldset = buttonNode.parentNode.parentNode;
     
-    /* Заголовок */
-    var th = document.createElement('th');
-    th.setAttribute('class', 'label');
-    th.innerHTML = 'Цех ' + (index - 4);
+    var index = 0;
+    var children = fieldset.getElementsByTagName('div');
+    for (i = 0; i < children.length; ++i) {
+        if (children[i].className == 'row operation') {
+            index++;
+        }
+    }
     
-    /* Ячейка */
-    var td = document.createElement('td');
+    /* Новый элемент */
+    var child = document.createElement('div');
+    with (child) {
+        className = 'row operation';
+        htmlName = 'operations.' + index;
+        
+        /* <label> */
+        var label = document.createElement('label');
+        label.innerHTML = 'Цех ' + (index + 1);
+        
+            /* Remove button */
+            var remove = document.createElement('a');
+            with (remove) {                
+                href = '#';
+                title = 'Удалить цех';
+                onclick = 'remove_operation(this)';
+            }
+            
+            var span = document.createElement('span');
+            span.className = 'button remove left';
+            remove.appendChild(span);
+            
+            label.appendChild(remove);
+        
+        appendChild(label);
+        
+        /* unit */
+        var unit = document.createElement('span');
+        with (unit) {
+            className = 'unit';
+            innerHTML = 'ч';
+            htmlFor = htmlName;
+        }
+        appendChild(unit);
+        
+        /* <input> */
+        input = document.createElement('input');
+        with (input) {
+            type = 'text';
+            className = 'text';
+            id = htmlName;
+            name = htmlName;
+        }
+        appendChild(input);
+    }
     
-    /* Поле ввода */
-    input = document.createElement('input');
-    input.setAttribute('type', 'text');
-    input.setAttribute('class', 'text');
-    
-    var id = 'operations.' + (index - 5);
-    input.setAttribute('id', id);
-    input.setAttribute('name', id);
-    td.appendChild(input);
-    
-    /* Единица измерения */
-    unit = document.createElement('span');
-    unit.setAttribute('class', 'unit');
-    unit.innerHTML = 'ч';
-    td.appendChild(unit);
-    
-    /* Добавляем */
-    var tr = table.insertRow(index);
-    tr.appendChild(th); tr.appendChild(td);
+    fieldset.appendChild(child);
 }
+
+function remove_operation(button) {
+    row = button.parentNode.parentNode;
+    row.parentNode.removeChild(row);
+}
+
 

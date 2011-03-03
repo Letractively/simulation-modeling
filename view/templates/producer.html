@@ -1,0 +1,111 @@
+{% extends "model.html" %}
+{% import "form.html" as form %}
+
+{% block input %}
+    <div class="block aside left properties">
+        <div class="title">Параметры</div>
+        <form action="/producer" method="post" class="properties">
+            {{ form.input(input.instream, "instream", label='Поступает в час:', unit='заявок') }}
+            {{ form.input(input.total_time, "total_time", label='Период времени:', unit='ч') }}
+            <fieldset>
+                <div class="legend">
+                    <a href="#" onclick="add_operation(this)"><span class="button add right"></span></a>
+                    Продолжительность работы
+                </div>
+                {{ form.input(input.deviation, "deviation", label='Разброс:') }}
+                {% for index, operation in input.operations|d({'0' : ''})|dictsort %}
+                    {{ form.input(operation, "operations." + index, label='<a title="Удалить цех" href="#" onclick="remove_operation(this)"><span class="button remove"></span></a>Цех ' + (index|int + 1)|string, unit='ч', class='operation') }}
+                {% endfor %}
+            </fieldset>
+            <fieldset>
+                <div class="legend">Прибыли и убытки</div>
+                {{ form.input(input.income, "income", label='Средняя прибыль:', unit='руб') }}
+                {{ form.input(input.costs, "costs", label='Издержки:', unit='руб') }}
+            </fieldset>
+            <div class="row submit">
+                <input type="reset" value="Сбросить" />
+                <input type="submit" value="Считать" />
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+
+{% block output %}
+<div class="block">
+    <div class="title">Качество работы системы</div>
+    <div class="content" style="padding-top: 8px">
+        <table class="left">
+            <caption>Заявки</caption>
+            <tbody>
+                <tr>
+                    <th>Всего</th>
+                    <td>
+                        {{ output.quality.abs.total }}
+                        <span class="unit">заявок</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="nested">
+                        {{ form.color('#008090') }}
+                        Принято
+                    </th>
+                    <td>
+                        {{ output.quality.abs.processed }}
+                        <span class="unit">заявок</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="nested">
+                        {{ form.color('#FF4D6F') }}
+                        Отклонено
+                    </th>
+                    <td>
+                        {{ output.quality.abs.rejected }}
+                        <span class="unit">заявок</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <img alt="Качество работы системы" class="chart right" style="width: 270px; height: 180px; margin: 9px 18px" src="http://chart.apis.google.com/chart?cht=p&amp;chs=270x180&amp;chl={{ output.quality.pc.processed }}%25|{{ output.quality.pc.rejected }}%25&amp;chco=008090,FF4D6F&amp;chds=0,{{ output.quality.abs.total }}&amp;chd=t:{{ output.quality.abs.processed }},{{ output.quality.abs.rejected }}" />
+        
+        <table>
+            <caption>Прибыль</caption>
+            <tbody>
+                <tr>
+                    <th>Полная прибыль</th>
+                    <td>
+                        {{ output.balance.processed }}
+                        <span class="unit">руб</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>С учётом издержек</th>
+                    <td>
+                        {{ output.balance.total }}
+                        <span class="unit">руб</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Недополученная прибыль</th>
+                    <td>
+                        {{ output.balance.rejected }}
+                        <span class="unit">руб</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block about %}
+<div id="content">
+    <h1>Модель производственной фирмы</h1>
+    <p>Модель производственной фирмы описывает последовательность операций, необходимых для изготовления изделия на фабрике.</p>
+    <p><em><strong>TODO:</strong> не забыть воды налить</em>
+</div>
+{% endblock %}
+
+
