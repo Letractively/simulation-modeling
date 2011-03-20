@@ -20,7 +20,13 @@ def index(names):
     template = templates.get_template('index.html')
     return template.render(app = app, models = names)
 
-def model(name, title, input = {}, output = {}, host = u'', query = {}):
+def help(name, title):
+    'Страница справки'
+    template = templates.get_template('help.html')
+    return template.render(app = app, name = name, title = title)
+
+def model(name, title, input = {}, output = {}, query = {}):
     'Страница модели'
     template = templates.get_template(name + '.html')
     return template.render(app = app, name = name, title = title, input = input, output = output)
+

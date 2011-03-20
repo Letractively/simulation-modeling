@@ -64,8 +64,30 @@ class Model(webapp.RequestHandler):
     
     get = post = request
 
+class Help(webapp.RequestHandler):
+    'Справка'
+    
+    def get(self):
+        'Выдача страницы справки'
+        
+        self.response.headers['Content-Type'] = 'text/html'
+
+        # Имя модели
+        name = self.request.path.split('/')[-1]
+        
+        # Загрузка модели
+        model = getattr(__import__('models.' + name, fromlist = ['models']), name)
+        
+        # Её название
+        title = model.__doc__
+        
+        self.response.out.write(view.help(name, title))
+        
+
 # Определение списка моделей
-routes = [('/', MainPage)] + [('/' + model, Model) for model in models.__all__]
+routes = [('/', MainPage)] + \
+    [('/' + model, Model) for model in models.__all__] + \
+    [('/help/' + model, Help) for model in models.__all__]
 
 # Запуск приложения
 application = webapp.WSGIApplication(routes, debug=True)

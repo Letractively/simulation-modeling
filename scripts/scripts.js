@@ -39,13 +39,13 @@ function add_operation(buttonNode, child) {
         
         /* <label> */
         var label = document.createElement('label');
-        label.innerHTML = 'Цех ' + (index + 1);
+        label.innerHTML = 'Рабочий ' + (index + 1);
         
             /* Remove button */
             var remove = document.createElement('a');
             with (remove) {                
                 href = '#';
-                title = 'Удалить цех';
+                title = 'Удалить рабочего';
                 onclick = 'remove_operation(this)';
             }
             

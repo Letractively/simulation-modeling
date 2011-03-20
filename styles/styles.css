@@ -96,6 +96,10 @@ img {
     padding-left: 288px;
 }
 
+.aside-right {
+    padding-right: 288px !important;
+}
+
 /* Text formatting */
 
 h1, h2, h3, h4, h5, h6 {
@@ -240,14 +244,18 @@ table {
     font-family: Arial;
 }
 
+table.left {
+    margin-right: 18px;
+}
+
+#output table td {
+    text-align: right;
+}
+
 table td, table th, table caption {
     border: solid 1px #CCCCCC;
     padding: 9px;
     padding-top: 8px;
-}
-
-table td {
-    text-align: right;
 }
 
 table th {
@@ -334,6 +342,7 @@ form.properties .row input.text {
 form.properties .row .unit {
     float: right;
     padding-left: 9px;
+    margin-right: 0;
 }
 
 form.properties fieldset {
@@ -392,6 +401,7 @@ form.properties .row.submit {
     width: 36px;
     margin-left: 3px;
     text-align: left;
+    margin-right: 18px;
     display: inline-block;
 }
 
@@ -461,5 +471,124 @@ table.properties .unit {
     font-weight: bold;
     text-decoration: none;
 }
+
+/* Figure */
+
+.figure {
+    text-align: center;
+    border: solid 1px #CCCCCC;
+    border-radius: 9px;
+    box-shadow: inset 0px 1px 5px #CCCCCC;
+    
+    display: inline-block;
+
+    margin: 9px 0;
+}
+
+.figure.chart {
+    margin-right: 18px;
+}
+
+.figure.right {
+    margin-left: 18px;
+}
+
+.figure img {
+    margin: 9px;
+}
+
+.figure .caption {
+    padding: 9px;
+    margin: 0 9px;
+    
+    /*background: #EEEEEE;*/
+    border-bottom-left-radius: 9px;
+    border-bottom-right-radius: 9px;
+    border-top: solid 1px #CCCCCC;
+    
+    color: #CC0000;
+    font-family: Arial;
+    text-decoration: none;
+    text-shadow: 1px 1px 2px #CCCCCC;
+}
+
+/* Blockquote */
+
+blockquote {
+    padding: 9px 18px;
+    border: solid 1px #CCCCCC;
+    border-radius: 9px;
+    box-shadow: inset 0px 1px 5px #CCCCCC;
+    margin: 9px 0;
+    background: #EEEEEE;
+}
+
+/* Unordered list */
+
+ul {
+    margin: 9px 0;
+    padding: 0;
+    padding-left: 36px;
+}
+
+li {
+    margin: 9px 0;
+    padding: 0;
+}
+
+/* Indices and powers */
+
+sub, sup {
+    font-size: 50%;
+}
+
+/* Sidebar menu */
+
+.block.menu {
+    background: #EEEEEE;
+}
+
+.block.menu ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.block.menu ul li {
+    padding: 0;
+    margin: 0;
+    border-bottom: solid 1px #CCCCCC;
+    display: block;
+}
+
+
+.block.menu ul li:last-child {
+    border: none;
+    border-bottom-left-radius: 18px;
+    border-bottom-right-radius: 18px;
+}
+
+.block.menu ul li a {
+    color: #CC0000;
+    text-decoration: none;
+    font-weight: bold;
+    
+    display: block;
+    width: 252px;
+    padding: 9px;
+}
+
+.block.menu ul li:hover {
+    background: #DDDDDD;
+}
+
+/* Workers (for /help/producer) */
+
+.worker1, .worker2, .worker3, .worker4 { text-align: center }
+
+.worker1 { background: #008090 }
+.worker2 { background: #FBFF53 }
+.worker3 { background: #1560BD }
+.worker4 { background: #FF4D6F }
 
 

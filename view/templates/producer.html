@@ -5,22 +5,23 @@
     <div class="block aside left properties">
         <div class="title">Параметры</div>
         <form action="/producer" method="post" class="properties">
-            {{ form.input(input.instream, "instream", label='Поступает в час:', unit='заявок') }}
-            {{ form.input(input.total_time, "total_time", label='Период времени:', unit='ч') }}
+            {{ form.input(input.instream, "instream", label='Срок между заявками:', unit='ч') }}
+            {{ form.input(input.total_time, "total_time", label='Период работы:', unit='ч') }}
             <fieldset>
                 <div class="legend">
-                    <a href="#" onclick="add_operation(this)"><span class="button add right"></span></a>
+                    <a href="#" onclick="add_operation(this)" title="Добавить рабочего"><span class="button add right"></span></a>
                     Продолжительность работы
                 </div>
                 {{ form.input(input.deviation, "deviation", label='Разброс:') }}
                 {% for index, operation in input.operations|d({'0' : ''})|dictsort %}
-                    {{ form.input(operation, "operations." + index, label='<a title="Удалить цех" href="#" onclick="remove_operation(this)"><span class="button remove"></span></a>Цех ' + (index|int + 1)|string, unit='ч', class='operation') }}
+                    {{ form.input(operation, "operations." + loop.index0|string, label='<a title="Удалить рабочего" href="#" onclick="remove_operation(this)"><span class="button remove"></span></a>Рабочий ' + loop.index|string, unit='ч', class='operation') }}
                 {% endfor %}
             </fieldset>
             <fieldset>
                 <div class="legend">Прибыли и убытки</div>
-                {{ form.input(input.income, "income", label='Средняя прибыль:', unit='руб') }}
+                {{ form.input(input.income, "income", label='Цена изделия:', unit='руб') }}
                 {{ form.input(input.costs, "costs", label='Издержки:', unit='руб') }}
+                {{ form.input(input.salary, "salary", label='Зарплата:', unit='руб') }}
             </fieldset>
             <div class="row submit">
                 <input type="reset" value="Сбросить" />
@@ -33,16 +34,25 @@
 
 {% block output %}
 <div class="block">
-    <div class="title">Качество работы системы</div>
+    <div class="title">Результаты моделирования</div>
     <div class="content" style="padding-top: 8px">
-        <table class="left">
-            <caption>Заявки</caption>
+        <table style="width: 100%">
             <tbody>
+                <tr>
+                    <th colspan="2" style="width: 50%">Заявки</th>
+                    <th colspan="2" style="width: 50%">Доходы и расходы</th>
+                <tr>
                 <tr>
                     <th>Всего</th>
                     <td>
                         {{ output.quality.abs.total }}
                         <span class="unit">заявок</span>
+                    </td>
+                    
+                    <th>Выручка</th>
+                    <td>
+                        {{ output.balance.processed }}
+                        <span class="unit">руб</span>
                     </td>
                 </tr>
                 <tr>
@@ -54,6 +64,11 @@
                         {{ output.quality.abs.processed }}
                         <span class="unit">заявок</span>
                     </td>
+                    <th>Чистая прибыль</th>
+                    <td>
+                        {{ output.balance.total }}
+                        <span class="unit">руб</span>
+                    </td>
                 </tr>
                 <tr>
                     <th class="nested">
@@ -64,37 +79,31 @@
                         {{ output.quality.abs.rejected }}
                         <span class="unit">заявок</span>
                     </td>
-                </tr>
-            </tbody>
-        </table>
-        
-        <img alt="Качество работы системы" class="chart right" style="width: 270px; height: 180px; margin: 9px 18px" src="http://chart.apis.google.com/chart?cht=p&amp;chs=270x180&amp;chl={{ output.quality.pc.processed }}%25|{{ output.quality.pc.rejected }}%25&amp;chco=008090,FF4D6F&amp;chds=0,{{ output.quality.abs.total }}&amp;chd=t:{{ output.quality.abs.processed }},{{ output.quality.abs.rejected }}" />
-        
-        <table>
-            <caption>Прибыль</caption>
-            <tbody>
-                <tr>
-                    <th>Полная прибыль</th>
-                    <td>
-                        {{ output.balance.processed }}
-                        <span class="unit">руб</span>
-                    </td>
-                </tr>
-                <tr>
-                    <th>С учётом издержек</th>
-                    <td>
-                        {{ output.balance.total }}
-                        <span class="unit">руб</span>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Недополученная прибыль</th>
+                    
+                    <th>Упущенная прибыль</th>
                     <td>
                         {{ output.balance.rejected }}
                         <span class="unit">руб</span>
                     </td>
                 </tr>
             </tbody>
+        </table>
+        
+        <div class="figure chart">
+            <img alt="Заявки" src="http://chart.apis.google.com/chart?cht=p&amp;chs=261x270{# &amp;chl=| #}&amp;chco=008090,FF4D6F&amp;chds=0,{{ output.quality.abs.total }}&amp;chd=t:{{ output.quality.abs.processed }},{{ output.quality.abs.rejected }}&amp;chdl=Принятые%20({{ output.quality.pc.processed }}%25)|Отклонённые%20({{ output.quality.pc.rejected }}%25)&amp;chdlp=b" />
+            <div class="caption">Заявки</div>
+        </div>
+        
+        <div class="figure chart">
+            <img alt="Количество ожидающих заявок" src="http://chart.apis.google.com/chart?cht=bvg&amp;chs=247x270&amp;chds=0,{{ output.max_queue }}&amp;chxt=y,x&amp;chm=B,0,0,0&amp;chxr=0,0,{{ output.max_queue }}{# ,1 #}|1,1,{{ output.queues|length }}&amp;chco=1560BD&amp;chd=t:{{ output.queues|join(",") }}&amp;chl=Рабочий%20{{ range(1, output.queues|length + 1)|join("|Рабочий%20") }}&amp;chbh=a">
+            <div class="caption">Среднее число заявок в ожидании</div>
+        </div>
+        
+        <table style="width: 100%">
+            <tr>
+                <th style="width: 50%">Фактор структуры</th>
+                <td>{{ output.factor }}</td>
+            </tr>
         </table>
     </div>
 </div>
@@ -107,5 +116,4 @@
     <p><em><strong>TODO:</strong> не забыть воды налить</em>
 </div>
 {% endblock %}
-
 

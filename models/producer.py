@@ -10,12 +10,13 @@ P = (rational, positive, finite)
 @accepts(
     instream  = P,
     operations = array(*P),
-    deviation      = P,
-    income      = U,
-    costs       = U,
+    deviation  = P,
+    income     = U,
+    costs      = U,
+    salary     = U,
     total_time = P,
 )
-def producer(instream, operations, deviation, income, costs, total_time):
+def producer(instream, operations, deviation, income, costs, salary, total_time):
     u'Производственная фирма'
     
     # Генераторы событий
@@ -26,9 +27,12 @@ def producer(instream, operations, deviation, income, costs, total_time):
     
     ENVIRONMENT = -1 # Новая заявка
     
+    # Статистика количества заявок
+    statistics = [0] * len(operations)
+    
     def event_stream():
         'Поток событий'
-        timer = distributions.exponential(1 / instream)
+        timer = distributions.exponential(instream)
         
         # Время появления следующей заявки
         next_order = timer.next()
@@ -52,6 +56,17 @@ def producer(instream, operations, deviation, income, costs, total_time):
     
     def process(time, source):
         'Переход заявки в следующее звено технологической цепи'
+        
+        # Предыдущее событие
+        try:
+            delta = time - process.previous_time
+            process.previous_time = time
+        except:
+            delta = process.previous_time = time
+        
+        # Статистика
+        for link, queue in enumerate(chain):
+            statistics[link] += len(queue) * delta
         
         # Обработка канала-источника
         if source > ENVIRONMENT:
@@ -86,8 +101,10 @@ def producer(instream, operations, deviation, income, costs, total_time):
         (key, round(orders * income, 2))
         for key, orders in orders.items() if key != 'total'
     )
-    balance['total'] = balance['processed'] - costs
+    balance['total'] = balance['processed'] - costs - salary * len(operations)
     
+    # Статистика очередей
+    queues = tuple(item / total_time for item in statistics)
     
     return {
         'factor' : round((max(operations) - min(operations)) / (sum(operations) / len(operations)), 3),
@@ -98,6 +115,8 @@ def producer(instream, operations, deviation, income, costs, total_time):
                 (key, round(value / float(orders['total']) * 100, 2)) for key, value in orders.items()
             ),
         },
+        'queues' : queues,
+        'max_queue' : max(queues),
     }
 
 
