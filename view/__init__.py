@@ -2,7 +2,7 @@
 
 # Импорт и настройка Jinja2
 from jinja2 import Environment, PackageLoader
-templates = Environment(loader=PackageLoader('view', 'templates'))
+templates = Environment(loader=PackageLoader('view', 'templates'), extensions = ['jinja2.ext.with_'])
 
 from settings import app
 

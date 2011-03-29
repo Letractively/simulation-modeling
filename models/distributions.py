@@ -4,7 +4,7 @@
 
 import random, math
 
-def normal(mu, sigma, **extra):
+def normal(mu, sigma):
   '''Нормальное распределение.
   
   mu - математическое ожидание, а sigma - стандартное (среднеквадратическое)

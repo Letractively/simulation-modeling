@@ -105,7 +105,37 @@ def array(*conditions, **key_conditions):
     return array
 
 
-def distribution(conditions = {'mean' : (rational, finite), 'from' : (rational, finite), 'to' : (rational, finite)}, reverse = False):
+def normal_distribution(conditions = {'mu' : (rational, finite), 'sigma' : (rational, finite, unsigned)}, postprocess = tuple()):
+    'Нормальное распределение'
+    
+    def normal_distribution(field):
+        values = validate(field, conditions)
+        
+        def normal_distribution(mu, sigma):
+            stream = distributions.normal(mu, sigma)
+        
+            while True:
+                value = stream.next() # Получение значения
+                
+                # И его обработка
+                try:
+                    for function in postprocess:
+                        value = function(value)
+                except:
+                    continue # Следующее значение
+                
+                yield value
+        
+        return normal_distribution(values['mu'], values['sigma'])
+    
+    return normal_distribution
+        
+
+def inverse(x):
+    'Обратная величина'
+    return 1.0 / x
+
+'''def distribution(conditions = {'mean' : (rational, finite), 'from' : (rational, finite), 'to' : (rational, finite)}, type = None, reverse = False):
     def distribution(field):
         'Распределение'
         
@@ -140,6 +170,7 @@ def distribution(conditions = {'mean' : (rational, finite), 'from' : (rational, 
             return distributions.normal(float(field['mean']))
 
     return distribution
+'''
 
 # Инструмент валидации
 

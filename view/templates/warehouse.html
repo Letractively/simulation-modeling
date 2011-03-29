@@ -1,0 +1,172 @@
+{% extends "model.html" %}
+{% import "form.html" as form %}
+
+{% block input %}
+    <div class="block aside left properties">
+        <div class="title">Параметры</div>
+        <form action="/warehouse" method="post" class="properties">
+            {{ form.input(input.lot_size, "lot_size", label='Размер партии:', unit='ед.') }}
+            {{ form.input(input.limit, "limit", label='Минимальный запас:', unit='ед.') }}
+            {{ form.input(input.amount, "amount", label='Начальный запас:', unit='ед.') }}
+            {{ form.input(input.total_time, "total_time", label='Период работы:', unit='дней') }}
+            <fieldset>
+                <div class="legend">Ежедневный спрос</div>
+                
+                {% with %}
+                    {% if input.demand is defined %}
+                        {% set demand = input.demand %}
+                    {% else %}
+                        {% set demand = {'mu' : '', sigma : ''} %}
+                    {% endif %}
+                    {{ form.input(demand.mu, "demand.mu", label='В среднем:', unit='заявок') }}
+                    {{ form.input(demand.sigma, "demand.sigma", label='Разброс:') }}
+                {% endwith %}
+            </fieldset>
+            
+            <fieldset>
+                <div class="legend">Время поставки</div>
+                
+                {% with %}
+                    {% if input.supply is defined %}
+                        {% set supply = input.supply %}
+                    {% else %}
+                        {% set supply = {'mu' : '', sigma : ''} %}
+                    {% endif %}
+                    {{ form.input(supply.mu, "supply.mu", label='В среднем:', unit='дней') }}
+                    {{ form.input(supply.sigma, "supply.sigma", label='Разброс:') }}
+                {% endwith %}
+            </fieldset>
+            
+            <fieldset>
+                <div class="legend">Цены</div>
+                {% with %}
+                    {% if input.price is defined %}
+                        {% set price = input.price %}
+                    {% else %}
+                        {% set price = {'demand' : '', 'supply' : '', 'fine' : '', 'storage' : ''} %}
+                    {% endif %}
+                    
+                    {{ form.input(price.demand, "price.demand", label='Розничная цена:', unit='р') }}
+                    {{ form.input(price.supply, "price.supply", label='Оптовая цена:', unit='р') }}
+                    {{ form.input(price.storage, "price.storage", label='Цена хранения:', unit='р') }}
+                    {{ form.input(price.fine, "price.fine", label='Неустойка:', unit='р') }}
+                {% endwith %}
+            </fieldset>
+            <div class="row submit">
+                <input type="reset" value="Сбросить" />
+                <input type="submit" value="Считать" />
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block about %}
+<div id="content">
+    <h1>Модель склада</h1>
+    <p>Модель производственной фирмы описывает жизнь склада, хранящего запас какой-либо продукции.</p>
+    <p><em><strong>TODO:</strong> не забыть воды налить</em>
+</div>
+{% endblock %}
+
+{% block output %}
+    <div class="block">
+        <div class="title">Результаты моделирования</div>
+        <div class="content" style="padding-top: 8px">
+            <table style="width: 100%">
+                <caption>Основные параметры</caption>
+                <tr>
+                    <th>
+                        Продажи
+                    </th>
+                    <td>
+                        {{ output.units.sales }}
+                        <span class="unit">ед.</span>
+                    </td>
+                    <td>{{ output.balance.sales }}
+                        <span class="unit">р</span>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <th>
+                        {{ form.color('#FBFF53') }}
+                        Поставки
+                    </th>
+                    <td>
+                        {{ output.units.supply }}
+                        <span class="unit">партий</span>
+                    </td>
+                    <td>{{ output.balance.supply }}
+                        <span class="unit">р</span>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <th>
+                        {{ form.color('#1560BD') }}
+                        Хранение
+                    </th>
+                    <td>{{ output.units.storage|round(3) }}
+                        <span class="unit">ед.</span>
+                    </td>
+                    <td>{{ output.balance.storage|round(2) }}
+                        <span class="unit">р</span>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <th>
+                        {{ form.color('#FF4D6F') }}
+                        Неустойки
+                    </th>
+                    <td>{{ output.units.fine }}
+                        <span class="unit">случаев</span>
+                    </td>
+                    <td>{{ output.balance.fine }}
+                        <span class="unit">р</span>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <th>
+                        {{ form.color('#008090') }}
+                        Чистая прибыль
+                    </th>
+                    <td colspan="2">
+                        {{ (output.balance.sales - output.balance.supply - output.balance.storage - output.balance.fine)|round(2) }}
+                        <span class="unit">р</span>
+                    </td>
+                </tr>
+            </table>
+            
+            {% if output.balance.sales > 0 %}
+                {% with %}
+                    {% set income = output.balance.sales - output.balance.supply - output.balance.storage - output.balance.fine %}
+                    {% if income > 0 %}
+                    
+                        {% set data = (output.balance.supply, output.balance.storage, output.balance.fine, income)|join(',') %}
+                        
+                        {% set labels = [('Поставки', output.balance.supply), ('Хранение', output.balance.storage), ('Неустойки', output.balance.fine), ('Прибыль', income)] %}
+                        <div class="figure chart">
+                            <img alt="Заявки" src="http://chart.apis.google.com/chart?cht=p&amp;chs=261x264&amp;chco=FBFF53,1560BD,FF4D6F,008090&amp;chds=0,{{ output.balance.sales }}&amp;chd=t:{{ data }}&amp;chdl={% for label, value in labels %}{{ '|' if loop.index0 }}{{ label }}%20({{ (value / output.balance.sales * 100)|round(2) }}%25){% endfor %}&amp;chdlp=b" />
+                            <div class="caption">Распределение выручки</div>
+                        </div>
+                    {% endif %}
+                {% endwith %}
+            {% endif %}
+            
+            {% if output.history.graph %}
+                <div class="chart figure">
+                    <img src="http://chart.apis.google.com/chart?cht=lxy&amp;chd=t:{{ output.history.graph.x|join(',') }}|{{ output.history.graph.y|join(',') }}|0,{{ output.history.graph.max.x }}|{{ output.history.graph.limit }},{{ output.history.graph.limit }}&amp;chs=568x264&amp;chds=0,{{ output.history.graph.max.x }},0,{{ output.history.graph.max.y }}&amp;chxt=x,y&amp;chxr=0,0,{{ output.history.graph.max.x }}|1,0,{{ output.history.graph.max.y }}&amp;chm=B,00809099,0,0,0&amp;chco=008090,FF4D6F">
+                    <div class="caption">История работы склада</div>
+                </div>
+            {% endif %}
+            
+            {#
+            <pre>
+                {{ output.history|pprint }}
+            </pre>
+            #}
+        </div>
+    </div>
+{% endblock %}

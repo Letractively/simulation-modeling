@@ -591,4 +591,14 @@ sub, sup {
 .worker3 { background: #1560BD }
 .worker4 { background: #FF4D6F }
 
+/* Minus, plus and equals signs for table rows */
+
+.minus, .plus, .equals {
+    font-weight: bold;
+}
+
+.minus  { color: #FF4D6F; }
+.plus   { color: #008090; }
+.equals { color: #1560BD; }
+
 
