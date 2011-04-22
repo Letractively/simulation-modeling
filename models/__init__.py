@@ -3,5 +3,5 @@
 'Инициализация пакета моделей'
 
 # Список моделей
-__all__ = ('producer', 'warehouse')
+__all__ = ('warehouse', ) # 'producer'
 

@@ -8,15 +8,15 @@ Infinity = float('Infinity')
 NaN      = float('NaN')
 
 def accepts(**p):
-  '''Список параметров, которые принимает модель, записывается в её атрибут accepts;
-  значения параметров по умолчанию - в атрибут defaults'''
-  def mixer(f):
-    # Подмешиваем в функцию её предусловия
-    f.accepts = p
-    
-    return f
+    'Список параметров, которые принимает модель, записывается в её атрибут accepts'
 
-  return mixer
+    def mixer(model):
+        'Подмешиваем в функцию её предусловия'
+        model.accepts = p
+
+        return model
+
+    return mixer
 
 # Предикаты
 
@@ -231,7 +231,6 @@ def validate(node, conditions):
                 return conditions(node)
             except Exception, error:
                 raise Exception(error.message)
-
 
 square = lambda x: x * x
 

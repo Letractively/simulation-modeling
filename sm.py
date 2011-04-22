@@ -8,7 +8,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 
 # Модули приложения
 import models, tree, view
-from models import validator
+from models import validator, agregator
 
 class MainPage(webapp.RequestHandler):
     'Список моделей'
@@ -26,6 +26,7 @@ class Model(webapp.RequestHandler):
     'Модель'
     
     def request(self):
+        
         self.response.headers['Content-Type'] = 'text/html'
 
         # Имя модели
@@ -35,59 +36,83 @@ class Model(webapp.RequestHandler):
         model = getattr(__import__('models.' + name, fromlist = ['models']), name)
         title = model.__doc__
         
-        # Входные параметры
-        parameters = self.request.POST or self.request.GET
-        if parameters:
-            # Аргументы моделирования
-            args = tree.from_materialized_path(parameters)
-            
-            # Нормализация аргументов (удаление лишних)
-            args = validator.normalize(args, model.accepts)
-            
-            # Валидация аргументов
-            errors = {}
-            if args:
-              try:
-                  parameters = validator.validate(args, model.accepts)
-              except Exception, error:
-                  errors = error.message
-                  output = {}
-              else:
-                  output = model(**parameters)
-            
-            # Входные параметры
-            input = tree.recursive_map(lambda arg, error: {'value' : arg, 'error' : error} if error else arg, args, errors)
-            
-            self.response.out.write(view.model(name, title, input, output))
-        else:
+        # Входной запрос
+        query = self.request.POST or self.request.GET
+        
+        if not query: # Если запрос пуст - просто выводим пустую страницу модели.
             self.response.out.write(view.model(name, title))
-    
+        else: # Необходимо обработать запрос.
+            # 1. Переводим его в дерево параметров и удаляем лишние, если есть.
+            raw_args = tree.from_materialized_path(query)
+            raw_args = validator.normalize(raw_args, model.accepts)
+            
+            # 2. Проверяем и очищаем параметры.
+            if not raw_args: # Если после удаления лишнего ничего не осталось -
+                self.response.out.write(view.model(name, title)) # выводим пустую страницу
+            else: # Проверка параметров.
+                try:
+                    args = validator.validate(raw_args, model.accepts)
+                except Exception, error: # Валидация обнаружила ошибку error
+                    args = {}
+                    output = {}
+                    errors = error.message # Сохраняем текст ошибки
+                else: # Валидация успешна. Запускаем агрегатор, передавая ему модель.
+                    errors = {}
+                    output = agregator.agregator(model, args)
+                
+                # Составляем входные данные.
+                input = tree.recursive_map(
+                    lambda arg, error:
+                        {'value' : arg, 'error' : error} if error else arg,
+                    raw_args,
+                    errors
+                )
+                
+                # Выводим страницу
+                self.response.out.write(
+                    view.model(name, title, input, output, self.request.body)
+                )
+
     get = post = request
 
-class Help(webapp.RequestHandler):
-    'Справка'
+class UrlShortener(webapp.RequestHandler):
+    'Обёртка для goo.gl API'
     
     def get(self):
-        'Выдача страницы справки'
+        'Сокращение URL'
         
-        self.response.headers['Content-Type'] = 'text/html'
+        # Получение URL модели, который должен быть сокращён
+        model = self.request.path.split('/')[-1]
+        host = self.request.host_url
+        args = self.request.query
+        url = '%s/%s?%s' % (host, model, args)
+        
+        # Вызов goo.gl
+        from google.appengine.api import urlfetch
+        result = urlfetch.fetch(
+            url = 'https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyCmKtYt1GL8F-9XXnywAHs2JzgMhm0OHzU',
+            method = urlfetch.POST,
+            payload = u'{ "longUrl" : "%s" }' % url,
+            headers = {
+                'Content-Type' : 'application/json',
+            }
+        )
+        if result.status_code == 200:
+            response = result.content
+        else:
+            raise Exception()
+        
+        # Парсинг
+        from django.utils import simplejson as json
+        shortUrl = json.loads(response)['id']
+        
+        self.response.out.write(view.shorten(shortUrl))
 
-        # Имя модели
-        name = self.request.path.split('/')[-1]
-        
-        # Загрузка модели
-        model = getattr(__import__('models.' + name, fromlist = ['models']), name)
-        
-        # Её название
-        title = model.__doc__
-        
-        self.response.out.write(view.help(name, title))
-        
 
-# Определение списка моделей
+# Определение списка страниц
 routes = [('/', MainPage)] + \
     [('/' + model, Model) for model in models.__all__] + \
-    [('/help/' + model, Help) for model in models.__all__]
+    [('/url/' + model, UrlShortener) for model in models.__all__]
 
 # Запуск приложения
 application = webapp.WSGIApplication(routes, debug=True)

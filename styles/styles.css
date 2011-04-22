@@ -273,6 +273,13 @@ table th.section, table caption {
     padding-left: 9px;
     font-weight: bold;
     
+    border: solid 1px #CCCCCC;
+    border-bottom: 0;
+    text-shadow: 1px 1px 2px #CCCCCC;
+    font-weight: normal;
+    font-size: 14px;
+    text-align: center;
+    
     box-shadow: inset 0px 9px 18px -3px white;
     -webkit-box-shadow: inset 0px 9px 18px -3px white;
     -moz-box-shadow: inset 0px 9px 18px -3px white;
@@ -282,6 +289,9 @@ table th.section, table caption {
 table caption {
     border: solid 1px #CCCCCC;
     border-bottom: 0;
+    text-shadow: 1px 1px 2px #CCCCCC;
+    font-weight: normal;
+    font-size: 14px;
     
     border-top-left-radius: 18px;
     border-top-right-radius: 18px;
@@ -343,6 +353,7 @@ form.properties .row .unit {
     float: right;
     padding-left: 9px;
     margin-right: 0;
+    width: 36px;
 }
 
 form.properties fieldset {
@@ -358,7 +369,8 @@ form.properties fieldset:last-child {
 
 form.properties fieldset .legend {
     color: #CC0000;
-    font-weight: bold;
+    text-shadow: 1px 1px 2px #CCCCCC;
+    font-size: 13px;
     
     box-shadow: inset 0px 9px 18px -3px white;
     -webkit-box-shadow: inset 0px 9px 18px -3px white;
@@ -398,14 +410,14 @@ form.properties .row.submit {
 
 .unit {
     color: #777777;
-    width: 36px;
     margin-left: 3px;
+    margin-right: 9px;
     text-align: left;
-    margin-right: 18px;
     display: inline-block;
 }
 
 table.properties .unit {
+    width: 36px;
     margin-left: 9px;
     width: 36px;
     margin-left: -36px;
@@ -449,6 +461,9 @@ table.properties .unit {
     width: 18px;
     display: inline-block;
     margin-right: 9px;
+    
+    border-radius: 3px;
+    box-shadow: 1px 1px 1px #CCCCCC;
 }
 
 /* Error message */
@@ -591,14 +606,14 @@ sub, sup {
 .worker3 { background: #1560BD }
 .worker4 { background: #FF4D6F }
 
-/* Minus, plus and equals signs for table rows */
+/* Poster */
 
-.minus, .plus, .equals {
-    font-weight: bold;
+.poster {
+    color: #CC0000;
+    font-family: Arial;
+    font-size: 24px;
+    margin: 18px;
+    text-align: center !important;
+    width: 100%;
 }
-
-.minus  { color: #FF4D6F; }
-.plus   { color: #008090; }
-.equals { color: #1560BD; }
-
 

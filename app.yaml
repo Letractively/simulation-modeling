@@ -10,5 +10,7 @@ handlers:
   static_dir: scripts
 - url: /images
   static_dir: images
+- url: /fancybox
+  static_dir: fancybox
 - url: /.*
   script: sm.py

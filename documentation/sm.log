@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.3.22)  29 MAR 2011 11:24
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2011.3.22)  22 APR 2011 15:58
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -689,33 +689,65 @@ runsystem(rm sm.out.pyg)...executed.
 runsystem(rm sm.pyg)...executed.
 
 
-Overfull \hbox (34.7109pt too wide) in paragraph at lines 130--131
+! Undefined control sequence.
+l.128 \subsubsubsection
+                       {РЎСЂРµРґРЅРµРµ РєРѕР»РёС‡РµСЃС‚РІРѕ С‚РѕРІР°СЂР° РЅР...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+[4]
+\openout3 = `sm.pyg'.
+
+runsystem(pygmentize -l python -f latex -F tokenmerge         -P "verboptions= 
+" -o sm.out.pyg sm.pyg)...executed.
+
+ (./sm.out.pyg)
+runsystem(rm sm.out.pyg)...executed.
+
+runsystem(rm sm.pyg)...executed.
+
+
+Overfull \hbox (34.7109pt too wide) in paragraph at lines 160--161
 \T2A/cmr/m/n/12 хо-ди-мо про-те-сти-ро-вать. Те-сты со-дер-жат-ся в фай-ле \T2A
-/cmtt/m/n/12 tests/warehouse_tests.py\T2A/cmr/m/n/12 . 
+/cmtt/m/n/12 tests/warehouse_tests.py\T2A/cmr/m/n/12 .
  []
 
-[4] [5] (./sm.aux) ) 
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 163.
+
+(/usr/share/texmf-texlive/tex/latex/base/omscmr.fd
+File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 163.
+ [5] [6] (./sm.aux) ) 
 Here is how much of TeX's memory you used:
- 3073 strings out of 494818
- 38169 string characters out of 1178666
+ 3092 strings out of 494818
+ 38473 string characters out of 1178666
  93764 words of memory out of 3000000
- 6184 multiletter control sequences out of 15000+50000
+ 6198 multiletter control sequences out of 15000+50000
  15093 words of font info for 42 fonts, out of 3000000 for 9000
  212 hyphenation exceptions out of 8191
  33i,6n,24p,890b,260s stack positions out of 5000i,500n,10000p,200000b,50000s
- </home/altaisoft/.texmf-var/fonts/pk/ljfour/lh/lh-t2a/lait
-1200.600pk> </home/altaisoft/.texmf-var/fonts/pk/ljfour/lh/lh-t2a/latt1200.600p
-k> </home/altaisoft/.texmf-var/fonts/pk/ljfour/lh/lh-t2a/labx1200.600pk> </home
-/altaisoft/.texmf-var/fonts/pk/ljfour/lh/lh-t2a/labx1440.600pk> </home/altaisof
-t/.texmf-var/fonts/pk/ljfour/lh/lh-t2a/lati1200.600pk> </home/altaisoft/.texmf-
-var/fonts/pk/ljfour/lh/lh-t2a/larm1200.600pk> </home/altaisoft/.texmf-var/fonts
-/pk/ljfour/lh/lh-t2a/labx1728.600pk> </home/altaisoft/.texmf-var/fonts/pk/ljfou
-r/lh/lh-t2a/larm1440.600pk> </home/altaisoft/.texmf-var/fonts/pk/ljfour/lh/lh-t
-2a/larm2074.600pk></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi
-12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr12.pfb>
-Output written on sm.pdf (5 pages, 102191 bytes).
+ </home/altaisoft/.texmf-var/fonts/pk/ljfour/lh/lh-t2a/lai
+t1200.600pk> </home/altaisoft/.texmf-var/fonts/pk/ljfour/lh/lh-t2a/latt1200.600
+pk> </home/altaisoft/.texmf-var/fonts/pk/ljfour/lh/lh-t2a/labx1200.600pk> </hom
+e/altaisoft/.texmf-var/fonts/pk/ljfour/lh/lh-t2a/labx1440.600pk> </home/altaiso
+ft/.texmf-var/fonts/pk/ljfour/lh/lh-t2a/lati1200.600pk> </home/altaisoft/.texmf
+-var/fonts/pk/ljfour/lh/lh-t2a/larm1200.600pk> </home/altaisoft/.texmf-var/font
+s/pk/ljfour/lh/lh-t2a/labx1728.600pk> </home/altaisoft/.texmf-var/fonts/pk/ljfo
+ur/lh/lh-t2a/larm1440.600pk> </home/altaisoft/.texmf-var/fonts/pk/ljfour/lh/lh-
+t2a/larm2074.600pk></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cme
+x10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi12.pfb></u
+sr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/tex
+mf-texlive/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-texlive/f
+onts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fonts/type1/pu
+blic/amsfonts/cm/cmsy10.pfb>
+Output written on sm.pdf (6 pages, 142512 bytes).
 PDF statistics:
- 271 PDF objects out of 1000 (max. 8388607)
+ 296 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

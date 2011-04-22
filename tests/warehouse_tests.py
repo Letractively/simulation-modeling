@@ -25,18 +25,15 @@ class WarehouseTest(unittest.TestCase):
             limit = 0,
             price = {
                 'supply'  : 9999,
-                'demand'    : 1,
                 'storage' : 1,
                 'fine'    : 9999,
             },
             total_time = 100
         )
-        result.pop('history')
         
         sample = {
             'units' : {
                 'supply'  : 0,
-                'sales'   : 100,
                 'fine'    : 0,
                 'storage' : sum(range(101)) / 100.0,
             },
@@ -45,7 +42,7 @@ class WarehouseTest(unittest.TestCase):
                 'supply'  : 0,
                 'storage' : sum(range(101)),
                 'fine'    : 0,
-                'sales' : 100,
+                'costs' : sum(range(101)),
             },
         }
         
@@ -62,18 +59,17 @@ class WarehouseTest(unittest.TestCase):
             limit = 0,
             price = {
                 'supply'  : 1,
-                'demand'  : 1,
                 'storage' : 1,
                 'fine'    : 9999,
             },
-            total_time = 3
+            total_time = 3,
+            
         )
-        result.pop('history')
+        
         
         sample = {
             'units' : {
                 'supply'  : 1,
-                'sales'   : 3,
                 'fine'    : 0,
                 'storage' : 10 / 3.0,
             },
@@ -82,7 +78,7 @@ class WarehouseTest(unittest.TestCase):
                 'supply'  : 5,
                 'storage' : 10,
                 'fine'    : 0,
-                'sales'   : 3,
+                'costs' : 15,
             },
         }
         
@@ -99,18 +95,16 @@ class WarehouseTest(unittest.TestCase):
             limit = 0,
             price = {
                 'supply'  : 9999,
-                'demand'    : 1,
                 'storage' : 1,
                 'fine'    : 1,
             },
             total_time = 100
         )
-        result.pop('history')
+        
         
         sample = {
             'units' : {
                 'supply'  : 0,
-                'sales'   : 0,
                 'fine'    : 100,
                 'storage' : 0,
             },
@@ -119,7 +113,42 @@ class WarehouseTest(unittest.TestCase):
                 'supply'  : 0,
                 'storage' : 0,
                 'fine'    : 100,
-                'sales' : 0,
+                'costs' : 100,
+            },
+        }
+        
+        self.assertEqual(result, sample)
+
+    def test_no_supply_with_amount(self):
+        'Отсутствующие поставки с начальным запасом'
+        
+        result = warehouse.warehouse(
+            demand = distributions.normal(999999999999999999, 0),
+            supply = distributions.normal(999999999999999999, 0),
+            amount = 100,
+            lot_size = 0,
+            limit = 0,
+            price = {
+                'supply'  : 9999,
+                'storage' : 1,
+                'fine'    : 1,
+            },
+            total_time = 100
+        )
+        
+        
+        sample = {
+            'units' : {
+                'supply'  : 0,
+                'fine'    : 0,
+                'storage' : 100,
+            },
+            
+            'balance' : {
+                'supply'  : 0,
+                'storage' : 10000,
+                'fine'    : 0,
+                'costs' : 10000,
             },
         }
         

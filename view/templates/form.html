@@ -23,3 +23,9 @@
     <span class="color" style="background: {{ color }}">&nbsp;</span>
 {%- endmacro %}
 
+{% macro permalink(shorten) -%}
+    {% if shorten %}
+        <a href="{{ shorten }}" id="permalink">Ссылка</a>
+    {% endif %}
+{%- endmacro %}
+

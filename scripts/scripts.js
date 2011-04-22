@@ -85,4 +85,12 @@ function remove_operation(button) {
     row.parentNode.removeChild(row);
 }
 
+/* FancyBox */
+$(document).ready(function() {
+    $("a#permalink").fancybox({
+        'width'  : 180,
+        'height' : 180
+    });
+})
+
 
