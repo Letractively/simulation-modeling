@@ -100,7 +100,7 @@ class UrlShortener(webapp.RequestHandler):
         if result.status_code == 200:
             response = result.content
         else:
-            raise Exception()
+            raise Exception(result.status_code)
         
         # Парсинг
         from django.utils import simplejson as json

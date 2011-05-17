@@ -52,7 +52,7 @@
                 {% endwith %}
             </fieldset>
             <div class="row submit">
-                {{ form.permalink(shorten) }}
+                {# { form.permalink(shorten) } #}
                 <input type="reset" value="Сбросить" />
                 <input type="submit" value="Считать" />
             </div>
@@ -76,7 +76,7 @@
                     
                     <tr>
                         <th>
-                            {{ form.color('#FBFF53') }}
+                            {{ form.color('#008090') }}
                             Поставки
                         </th>
                         <td>
@@ -88,14 +88,14 @@
                         </td>
                         {% if output.balance.costs %}
                             <td rowspan="6" style="background: url(/images/pie-background.png) no-repeat; background-position: 18px 18px; border-left: solid 2px #CCCCCC">
-                                <img alt="Заявки" src="http://chart.apis.google.com/chart?cht=p&amp;chs=219x219&amp;chco=FBFF53,1560BD,FF4D6F&amp;chds=0,{{ output.balance.costs }}&amp;chd=t:{{ output.balance.supply }},{{ output.balance.storage }},{{ output.balance.fine }}&amp;chf=bg,s,FFFFFF00" />
+                                <img alt="Заявки" src="http://chart.apis.google.com/chart?cht=p&amp;chs=219x219&amp;chco=008090,FBFF53,FF4D6F&amp;chds=0,{{ output.balance.costs }}&amp;chd=t:{{ output.balance.supply }},{{ output.balance.storage }},{{ output.balance.fine }}&amp;chf=bg,s,FFFFFF00" />
                             </td>
                         {% endif %}
                     </tr>
                     
                     <tr>
                         <th>
-                            {{ form.color('#1560BD') }}
+                            {{ form.color('#FBFF53') }}
                             Хранение
                         </th>
                         <td>{{ output.units.storage|round(3) }}
@@ -163,8 +163,7 @@
     
     <p>Нам необходимо определить, когда заказывать партии тетрадей и каков должен быть размер каждой партии, чтобы мы удовлетворили как можно больше покупателей и наши расходы были минимальны.</p>
     
-    <p>Вот примеры модели с уже введёнными параметрами: <a href="http://goo.gl/HEe2U">Склад материалов с подвозом на железнодорожном транспорте</a>. Описание модели см. в учебно-методическом пособии, с. 36.</p>
-    <p><em>Продолжение следует</em></p>
+    <p>Вот примеры модели с уже введёнными параметрами: <a href="http://goo.gl/Lab56">Склад материалов с подвозом на железнодорожном транспорте</a>. Описание модели см. в учебно-методическом пособии, с. 36.</p>
 </div>
 {% endblock %}
 

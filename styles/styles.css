@@ -353,7 +353,7 @@ form.properties .row .unit {
     float: right;
     padding-left: 9px;
     margin-right: 0;
-    width: 36px;
+    width: 24px;
 }
 
 form.properties fieldset {
@@ -437,7 +437,7 @@ table.properties .unit {
     
     width: 180px;
     position: relative;
-    left: 36px;
+    left: 72px;
     top: 27px;
     height: 30px;
     padding: 3px 9px;
@@ -445,13 +445,29 @@ table.properties .unit {
     margin-right: -180px;
     z-index: 10;
     
-    overflow: hidden;
     text-align: left;
     float: right;
     
     border-radius: 9px;
     box-shadow: 0px 1px 5px #CCCCCC;
     box-shadow: inset 0px 9px 18px -9px white;
+}
+
+.balloon:before {
+    background: url(/images/arrow.png) no-repeat 0 50%;
+    width: 12px;
+    height: 30px;
+    content: ".";
+    
+    float: left;
+    position: relative;
+    
+    left: -20px;
+    margin-right: -20px;
+    
+    z-index: 100;
+    width: 12px;
+    
 }
 
 /* Color */
