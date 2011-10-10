@@ -25,15 +25,12 @@ class MainPage(webapp.RequestHandler):
 class Model(webapp.RequestHandler):
     'Модель'
     
-    def request(self):
+    def request(self, name):
         
         self.response.headers['Content-Type'] = 'text/html'
-
-        # Имя модели
-        name = self.request.path.split('/')[-1]
         
         # Загрузка модели
-        model = getattr(__import__('models.' + name, fromlist = ['models']), name)
+        model = getattr(__import__('models.' + name, fromlist=['models']), name)
         title = model.__doc__
         
         # Входной запрос
@@ -75,6 +72,17 @@ class Model(webapp.RequestHandler):
 
     get = post = request
 
+class Help(webapp.RequestHandler):
+    'Справочная система'
+    
+    def get(self, name):
+        self.response.headers['Content-Type'] = 'text/html'
+        
+        model = getattr(__import__('models.' + name, fromlist=['models']), name)
+        title = model.__doc__
+        
+        self.response.out.write(view.help(name, title))
+
 class UrlShortener(webapp.RequestHandler):
     'Обёртка для goo.gl API'
     
@@ -110,9 +118,12 @@ class UrlShortener(webapp.RequestHandler):
 
 
 # Определение списка страниц
-routes = [('/', MainPage)] + \
-    [('/' + model, Model) for model in models.__all__] + \
-    [('/url/' + model, UrlShortener) for model in models.__all__]
+routes = [
+    ('/', MainPage),
+    (r'^/url/', UrlShortener),
+    (r'^/help/([^/]*)/*', Help),
+    (r'^/([^/]+)', Model),
+]
 
 # Запуск приложения
 application = webapp.WSGIApplication(routes, debug=True)

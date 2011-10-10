@@ -13,7 +13,7 @@ def index(names):
 
 def help(name, title):
     'Страница справки'
-    template = templates.get_template('help.html')
+    template = templates.get_template('help/%s.html' % name)
     return template.render(app = app, name = name, title = title)
 
 def model(name, title, input = {}, output = {}, shorten = None):
@@ -26,4 +26,5 @@ def shorten(url):
     
     template = templates.get_template('shorten.html')
     return template.render(url = url)
+
 

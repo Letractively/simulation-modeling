@@ -36,11 +36,9 @@ def warehouse(demand, supply, amount, lot_size, limit, price, total_time):
     
     # Событие за границами total_time никогда не произойдёт
     delivery = never = total_time + 1
-    day_length = 8 # 8-часовой рабочий день
 
     time = 0 # Время модели
     for delta in demand:
-        delta = delta * day_length
         time += delta
         
         # Выход за границы. Завершаем работу.
@@ -58,7 +56,7 @@ def warehouse(demand, supply, amount, lot_size, limit, price, total_time):
             delivery = never
         
         # На складе есть продукция
-        if amount: # Продаём блочок
+        if amount: # Продаём одну единицу
             amount -= 1
             sales  += 1
         else: # Продукции нет
