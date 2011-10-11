@@ -7,6 +7,7 @@
         <form action="/producer" method="post" class="properties">
             {{ form.input(input.instream, "instream", label='Срок между заявками:', unit='ч') }}
             {{ form.input(input.total_time, "total_time", label='Период работы:', unit='ч') }}
+            {{ form.input(input.times, "times", label='Число итераций:') }}
             <fieldset>
                 <div class="legend">
                     <a href="#" onclick="add_operation(this)" title="Добавить рабочего"><span class="button add right"></span></a>
@@ -36,6 +37,13 @@
 <div class="block">
     <div class="title">Результаты моделирования</div>
     <div class="content" style="padding-top: 8px">
+    {% with %}
+        {% if output.agregated %}
+            {% set mgc    = output.min_guaranteed_profit %}
+            {% set output = output.mean %}
+        {% else %}
+            {% set mgc = output.balance.total %}
+        {% endif %}
         <table style="width: 100%">
             <tbody>
                 <tr>
@@ -86,25 +94,29 @@
                         <span class="unit">руб</span>
                     </td>
                 </tr>
+                
+                <tr>
+                    <th class="section" colspan="2">Фактор структуры</th>
+                    <th class="section" colspan="2">Минимальная гарантированная прибыль</th>
+                </tr>
+                
+                <tr>
+                    <td class="poster" style="padding: 18px" colspan="2">{{ output.factor }}</td>
+                    <td class="poster" colspan="2">{{ mgc|round(2) }}</td>
+                </tr>
             </tbody>
         </table>
         
         <div class="figure chart">
-            <img alt="Заявки" src="http://chart.apis.google.com/chart?cht=p&amp;chs=261x270{# &amp;chl=| #}&amp;chco=008090,FF4D6F&amp;chds=0,{{ output.quality.abs.total }}&amp;chd=t:{{ output.quality.abs.processed }},{{ output.quality.abs.rejected }}&amp;chdl=Принятые%20({{ output.quality.pc.processed }}%25)|Отклонённые%20({{ output.quality.pc.rejected }}%25)&amp;chdlp=b" />
+            <img alt="Заявки" src="http://chart.apis.google.com/chart?cht=p&amp;chs=261x270&amp;chco=008090,FF4D6F&amp;chds=0,{{ output.quality.abs.total }}&amp;chd=t:{{ output.quality.abs.processed }},{{ output.quality.abs.rejected }}&amp;chdl=Принятые%20({{ output.quality.pc.processed }}%25)|Отклонённые%20({{ output.quality.pc.rejected }}%25)&amp;chdlp=b" />
             <div class="caption">Заявки</div>
         </div>
         
         <div class="figure chart">
-            <img alt="Количество ожидающих заявок" src="http://chart.apis.google.com/chart?cht=bvg&amp;chs=247x270&amp;chds=0,{{ output.max_queue }}&amp;chxt=y,x&amp;chm=B,0,0,0&amp;chxr=0,0,{{ output.max_queue }}{# ,1 #}|1,1,{{ output.queues|length }}&amp;chco=1560BD&amp;chd=t:{{ output.queues|join(",") }}&amp;chl=Рабочий%20{{ range(1, output.queues|length + 1)|join("|Рабочий%20") }}&amp;chbh=a">
+            <img alt="Количество ожидающих заявок" src="http://chart.apis.google.com/chart?cht=bvg&amp;chs=247x270&amp;chds=0,{{ output.max_queue }}&amp;chxt=y,x&amp;chm=B,0,0,0&amp;chxr=0,0,{{ output.max_queue }}|1,1,{{ output.queues|length }}&amp;chco=1560BD&amp;chd=t:{{ output.queues|join(",") }}&amp;chl=Рабочий%20{{ range(1, output.queues|length + 1)|join("|Рабочий%20") }}&amp;chbh=a">
             <div class="caption">Среднее число заявок в ожидании</div>
         </div>
-        
-        <table style="width: 100%">
-            <tr>
-                <th style="width: 50%">Фактор структуры</th>
-                <td>{{ output.factor }}</td>
-            </tr>
-        </table>
+    {% endwith %}
     </div>
 </div>
 {% endblock %}

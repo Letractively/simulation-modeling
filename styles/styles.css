@@ -38,7 +38,7 @@ img {
     border-top-right-radius: 18px;
 }
 
-#appname, #title {
+#appname, #title, #back {
     font-size: 27px;
     line-height: 36px;
     padding: 18px;
@@ -58,6 +58,39 @@ img {
     background: url(/images/sinusoid.png) repeat-x;
     height: 35px;
     width: 100%;
+}
+
+/* Toolbar */
+
+#toolbar {
+    float: right;
+    padding: 12px;
+}
+
+#toolbar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#toolbar ul li {
+    margin: 0;
+    padding: 9px;
+    display: inline-block;
+    
+    background: #D9415E;
+    border-radius: 9px;
+}
+
+#toolbar a {
+    color: white;
+    text-decoration: none;
+    font-family: Arial;
+    text-align: center;
+}
+
+#toolbar span {
+    display: block;
 }
 
 /* Main content */

@@ -5,8 +5,21 @@
 {%- endblock %}
 
 {% block appname -%}
-  <a href="/" title="{{ app.name }}">{{ app.short }}</a>
+    <a href="/" title="{{ app.name }}">{{ app.short }}</a>
 {%- endblock %}
+
+{% block toolbar %}
+    <div id="toolbar">
+        <ul>
+            <li>
+                <a href="/help/{{ name }}">
+                    <img src="/images/help.png">
+                    <span>Справка</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}
 
 {% block content %}
   {% block input %}{% endblock %}

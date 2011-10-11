@@ -9,18 +9,21 @@
     <a href="/" title="{{ app.name }}">{{ app.short }}</a>
 {%- endblock %}
 
+{% block toolbar %}
+    <div id="toolbar">
+        <ul>
+            <li>
+                <a href="/{{ name }}">
+                    <img src="/images/model.png">
+                    <span>Модель</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}
+
 {% block content %}
     <div class="aside right">
-    
-        <div class="block">
-            <div class="title">Перейти к модели</div>
-            <div class="content" style="text-align: center">
-                <a href="/{{ name }}" title="Перейти к модели">
-                    <img src="/images/models/{{ name }}.png" alt="Перейти к модели" />
-                </a>
-            </div>
-        </div>
-        
         <div class="block menu">
             <div class="title">Ссылки</div>
             <ul>

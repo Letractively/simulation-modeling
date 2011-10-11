@@ -19,7 +19,11 @@ def agregate(*agregators):
 
 def average(*args):
     'Функция, находящая среднее арифметическое списка аргументов'
-    return sum(args) / float(len(args))
+    
+    try:
+        return sum(args) / float(len(args))
+    except:
+        raise Exception(args)
 
 def mean(variants):
     'Усредняет все показатели по всем вариантам'
@@ -42,6 +46,22 @@ def max_guaranteed_costs(variants):
 
     # Теперь найдём максимальные гарантированные расходы.
     return M + K * s
+    
+def min_guaranteed_profit(variants):
+    'Максимальные гарантированные расходы'
+    
+    from math import sqrt
+    from models.validator import square
+    
+    X = tuple(variant['balance']['total'] for variant in variants)
+    M = average(*X)
+    s = sqrt(average(*(square(x - M) for x in X)))
+
+    # Квантиль уровня гарантии
+    K = 1.28
+
+    # Теперь найдём максимальные гарантированные расходы.
+    return M - K * s
 
 def agregator(model, args):
     'Агрегирующая функция'

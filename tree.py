@@ -46,6 +46,14 @@ def recursive_map(f, *trees):
         
         return output
     
-    else: # Лист
-        return f(*trees)
+    if type(tree) in (list, tuple):
+        output = []
+        
+        for index, value in enumerate(tree):
+             output.append(recursive_map(f, *(tree[index] if len(tree) > index else None for tree in trees)))
+         
+        return output
+    
+    # Лист
+    return f(*trees)
 

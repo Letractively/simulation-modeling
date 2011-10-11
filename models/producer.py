@@ -4,9 +4,12 @@
 
 import distributions
 from validator import *
+from agregator import *
 
 U = (rational, unsigned, finite)
 P = (rational, positive, finite)
+
+@agregate(mean, min_guaranteed_profit)
 @accepts(
     instream  = P,
     operations = array(*P),
