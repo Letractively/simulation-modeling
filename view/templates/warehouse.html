@@ -52,7 +52,6 @@
                 {% endwith %}
             </fieldset>
             <div class="row submit">
-                {# { form.permalink(shorten) } #}
                 <input type="reset" value="Сбросить" />
                 <input type="submit" value="Считать" />
             </div>
@@ -140,12 +139,6 @@
                     
                 </table>
             {% endwith %}
-            
-            {% if False %}
-                <pre>
-                    {{ shorten|pprint }}
-                </pre>
-            {% endif %}
         </div>
     </div>
 {% endblock %}

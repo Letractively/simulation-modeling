@@ -86,11 +86,10 @@ class Help(webapp.RequestHandler):
 class UrlShortener(webapp.RequestHandler):
     'Обёртка для goo.gl API'
     
-    def get(self):
+    def get(self, model):
         'Сокращение URL'
         
         # Получение URL модели, который должен быть сокращён
-        model = self.request.path.split('/')[-1]
         host = self.request.host_url
         args = self.request.query
         url = '%s/%s?%s' % (host, model, args)
@@ -120,9 +119,9 @@ class UrlShortener(webapp.RequestHandler):
 # Определение списка страниц
 routes = [
     ('/', MainPage),
-    (r'^/url/', UrlShortener),
+    (r'^/url/([^/]+)/*', UrlShortener),
     (r'^/help/([^/]*)/*', Help),
-    (r'^/([^/]+)', Model),
+    (r'^/([^/]+)/*', Model),
 ]
 
 # Запуск приложения

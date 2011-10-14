@@ -89,7 +89,8 @@ function remove_operation(button) {
 $(document).ready(function() {
     $("a#permalink").fancybox({
         'width'  : 180,
-        'height' : 180
+        'height' : 180,
+        'titlePosition': 'inside',
     });
 })
 
