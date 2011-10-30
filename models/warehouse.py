@@ -11,7 +11,7 @@ RUF = (rational, unsigned, finite)
 IUF = (integer, unsigned, finite)
 IPF = (integer, positive, finite)
 
-@agregate(mean, max_guaranteed_costs)
+@aggregate(mean, max_guaranteed_costs)
 @accepts(
     demand     = normal_distribution(conditions = {'mu' : RPF, 'sigma' : RUF}, postprocess = (positive, inverse)),
     supply     = normal_distribution(conditions = {'mu' : RPF, 'sigma' : RUF}, postprocess = (positive,)),

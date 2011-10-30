@@ -10,7 +10,11 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 import models, tree, view
 from models import validator, agregator
 
-class MainPage(webapp.RequestHandler):
+class Handler(webapp.RequestHandler):
+    def _handle_exception(self, exception, debug_mode):
+        self.response.out.write(view.internal_error())
+
+class MainPage(Handler):
     'Список моделей'
     def get(self):
         self.response.headers['Content-Type'] = 'text/html'
@@ -22,7 +26,7 @@ class MainPage(webapp.RequestHandler):
         
         self.response.out.write(view.index(names))
 
-class Model(webapp.RequestHandler):
+class Model(Handler):
     'Модель'
     
     def request(self, name):
@@ -31,6 +35,7 @@ class Model(webapp.RequestHandler):
         
         # Загрузка модели
         model = getattr(__import__('models.' + name, fromlist=['models']), name)
+        
         title = model.__doc__
         
         # Входной запрос
@@ -72,7 +77,7 @@ class Model(webapp.RequestHandler):
 
     get = post = request
 
-class Help(webapp.RequestHandler):
+class Help(Handler):
     'Справочная система'
     
     def get(self, name):
@@ -83,7 +88,7 @@ class Help(webapp.RequestHandler):
         
         self.response.out.write(view.help(name, title))
 
-class UrlShortener(webapp.RequestHandler):
+class UrlShortener(Handler):
     'Обёртка для goo.gl API'
     
     def get(self, model):
@@ -113,15 +118,24 @@ class UrlShortener(webapp.RequestHandler):
         from django.utils import simplejson as json
         shortUrl = json.loads(response)['id']
         
+        self.response.headers['Content-Type'] = 'text/html'
         self.response.out.write(view.shorten(shortUrl))
 
+class NotFound(Handler):
+    'Страница не найдена'
+    
+    def get(self):
+        self.response.out.write(view.notfound())
 
 # Определение списка страниц
+model_list = '|'.join(models.__all__)
 routes = [
     ('/', MainPage),
-    (r'^/url/([^/]+)/*', UrlShortener),
-    (r'^/help/([^/]*)/*', Help),
-    (r'^/([^/]+)/*', Model),
+    ('^/url/(%s)/*' % model_list, UrlShortener),
+    ('^/help/(%s)/*' % model_list, Help),
+    ('^/(%s)/*' % model_list, Model),
+    ('^/*$', MainPage),
+    ('^.*$', NotFound),
 ]
 
 # Запуск приложения

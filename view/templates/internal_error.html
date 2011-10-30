@@ -1,0 +1,18 @@
+{% extends "sm.html" %}
+
+
+{% block title -%}
+  {{ title }} | {{ app.short }}
+{%- endblock %}
+
+{% block appname -%}
+    <a href="/" title="{{ app.name }}">{{ app.short }}</a>
+{%- endblock %}
+
+{% block content %}
+    <div style="padding: 0px 18px">
+        <h1>Внутренняя ошибка</h1>
+        <img src="/images/warning.png" class="left" alt="" />
+        <p>Произошла внутренняя ошибка приложения. Сообщение о ней уже послано нам автоматически, и мы постараемся её исправить. Вы можете <a href="mailto:altaisoft@gmail.com">написать нам</a> или <a href="javascript:history.back()">вернуться назад</a>.
+    </div>
+{% endblock %}

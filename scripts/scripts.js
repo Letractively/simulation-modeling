@@ -85,6 +85,12 @@ function remove_operation(button) {
     row.parentNode.removeChild(row);
 }
 
+function no_faults() {
+    document.getElementById("fault_stream").value = "∞";
+    document.getElementById("repair_stream").value = "0";
+    document.getElementById("destructive").value = "0";
+}
+
 /* FancyBox */
 $(document).ready(function() {
     $("a#permalink").fancybox({
@@ -93,5 +99,6 @@ $(document).ready(function() {
         'titlePosition': 'inside',
     });
 })
+
 
 

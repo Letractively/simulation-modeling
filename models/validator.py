@@ -129,11 +129,63 @@ def normal_distribution(conditions = {'mu' : (rational, finite), 'sigma' : (rati
         return normal_distribution(values['mu'], values['sigma'])
     
     return normal_distribution
+
+
+def exponential_distribution(conditions = (rational, finite), postprocess = tuple()):
+    'Экспоненциальное распределение'
+    
+    def exponential_distribution(field):
+        values = validate(field, conditions)
         
+        def exponential_distribution(mean):
+            stream = distributions.exponential(mean)
+        
+            while True:
+                value = stream.next() # Получение значения
+                
+                # И его обработка
+                try:
+                    for function in postprocess:
+                        value = function(value)
+                except:
+                    continue # Следующее значение
+                
+                yield value
+        
+        return exponential_distribution(values)
+    
+    return exponential_distribution
+
 
 def inverse(x):
     'Обратная величина'
     return 1.0 / x
+
+def default(fallback_value):
+    'Значение по умолчанию'
+    
+    def default(value):
+        if not value:
+            return fallback_value
+    
+    return default
+
+def const_generator(constant):
+    'Генератор, возвращающий константу'
+    
+    def const_generator(_):
+        yield constant
+    
+    return const_generator
+
+def conditional(condition, true_clause, false_clause):
+    'Условие'
+    
+    def conditional(value):
+        return true_clause(value) if condition(value) else false_clause(value)
+
+    return conditional
+
 
 '''def distribution(conditions = {'mean' : (rational, finite), 'from' : (rational, finite), 'to' : (rational, finite)}, type = None, reverse = False):
     def distribution(field):

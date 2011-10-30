@@ -11,6 +11,13 @@
 {% block toolbar %}
     <div id="toolbar">
         <ul>
+            <li>
+                <a href="/" title="Главная">
+                    <img src="/images/home.png" alt="На главную" />
+                    <span>Главная</span>
+                </a>
+            </li>
+            
             {% if shorten %}
             <li>
                 <a href="{{ shorten }}" id="permalink" title="Поделиться ссылкой на модель">
@@ -19,7 +26,6 @@
                 </a>
             </li>
             {% endif %}
-            </li>
             
             <li>
                 <a href="/help/{{ name }}" title="Методические рекомендации">

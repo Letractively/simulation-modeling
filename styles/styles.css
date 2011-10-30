@@ -665,5 +665,15 @@ sub, sup {
     margin: 18px;
     text-align: center !important;
     width: 100%;
+    padding: 18px;
 }
+
+.clearfix:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
 

@@ -19,12 +19,22 @@ def help(name, title):
 def model(name, title, input = {}, output = {}, shorten = None):
     'Страница модели'
     template = templates.get_template(name + '.html')
-    return template.render(app = app, name = name, title = title, input = input, output = output, shorten = '/url/%s?%s' % (name, shorten.replace('&', '&amp;')) if shorten else None)
+    return template.render(app=app, name=name, title=title, input=input, output=output, shorten='/url/%s?%s' % (name, shorten.replace('&', '&amp;')) if shorten else None)
 
 def shorten(url):
     'Укорочение URL'
     
     template = templates.get_template('shorten.html')
-    return template.render(url = url)
+    return template.render(url=url)
 
+def notfound():
+    'Страница не найдена'
+    template = templates.get_template('notfound.html')
+    return template.render(app=app, title=u'Страница не найдена')
+
+def internal_error():
+    'Внутренняя ошибка'
+    
+    template = templates.get_template('internal_error.html')
+    return template.render(app=app, title=u'Внутренняя ошибка')
 

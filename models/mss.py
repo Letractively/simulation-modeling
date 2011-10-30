@@ -4,56 +4,34 @@
 
 import random, math, distributions
 from models.validator import *
+from models.agregator import *
 
 # Условия для распределений
-c = (rational, positive, finite)
-conditions = {'mean' : c, 'from' : c, 'to' : c}
+conditions = (rational, positive, finite)
+inverse_conditions = (rational, positive, finite, inverse)
 
+@aggregate(mean)
 @accepts(
-        channelsCount=(integer, positive), # Количество каналов
+        channels_count=(integer, positive), # Количество каналов
 
-        queue={     # Очередь
-               'size': (integer, unsigned), # Максимальный размер очереди
-               'time': (rational, unsigned), # Максимальное время ожидания в очереди
-               },
+        # Очередь
+        queue_size=(integer, unsigned), # Максимальный размер очереди
+        queue_time=(rational, unsigned), # Максимальное время ожидания
 
-        streams={   # Потоки
-                 'in':  distribution(conditions, reverse = True), # Входной поток заявок
-                 'out': distribution(conditions, reverse = True), # Выходной поток обслуживаний
-                 },
+        # Потоки
+        in_stream=exponential_distribution(inverse_conditions), # Заявки
+        out_stream=exponential_distribution(inverse_conditions), # Обслуживания
+        cost=(rational, unsigned, finite), # Стоимость обработки заявки
 
-        faults={    # Неисправности
-                'problems': (rational, positive), # Поток неисправностей
-                'repairs':  (rational, finite, positive), # Поток ремонтов
-                'destructive': probability, # Доля аварий
-                },
+        fault_stream=conditional(lambda x: x == u'∞', const_generator(Infinity), exponential_distribution(conditions)), # Проблемы
+        repair_stream=conditional(lambda x: x == u'0', const_generator(0), exponential_distribution(conditions)), # Ремонты
+        destructive=(rational, probability), # Доля аварий
 
-        totalTime=(rational, positive), # Продолжительность моделирования
-        )
-def mss(channelsCount, queue, streams, faults, totalTime):
+        total_time=(rational, positive), # Продолжительность моделирования
+)
+def mss(channels_count, queue_size, queue_time, in_stream, out_stream, cost, fault_stream, repair_stream, destructive, total_time):
     u'Система массового обслуживания'
     
-    def positive_only(generator):
-        'Фильтрует вывод генератора, пропуская только положительные значения'
-        repeats = 0
-        while repeats < 100:
-            value = generator.next()
-            
-            if value > 0:
-                repeats = 0
-                yield value
-            else:
-                repeats += 1
-        
-        raise StopIteration
-    
-    # Потоки
-    in_stream = positive_only(streams['in'])
-    out_stream = positive_only(streams['out'])
-
-    fault_stream = positive_only(distributions.exponential(faults['problems']))
-    repair_stream = positive_only(distributions.exponential(faults['repairs']))
-
     # Действия
     mss.actions = {}
 
@@ -90,7 +68,7 @@ def mss(channelsCount, queue, streams, faults, totalTime):
         'Принять заявку в обработку'
 
         # Поиск свободного канала
-        free = [key for key, value in enumerate(orders) if value == Infinity and 1 <= key <= channelsCount]
+        free = [key for key, value in enumerate(orders) if value == Infinity and 1 <= key <= channels_count]
 
         # Выбор случайного канала
         channel = random.choice(free)
@@ -101,7 +79,7 @@ def mss(channelsCount, queue, streams, faults, totalTime):
     @action(state=increment)
     def sit(time):
         'Отправка заявки в очередь'
-        orders.append(time + queue['time'])
+        orders.append(time + queue_time)
 
     @action()
     def sizeout(time):
@@ -115,12 +93,12 @@ def mss(channelsCount, queue, streams, faults, totalTime):
     @action(state=decrement)
     def stand(time):
         'Удаление первого элемента из очереди'
-        orders.pop(channelsCount + 1)
+        orders.pop(channels_count + 1)
 
     @action(state=decrement)
     def timeout(time):
         'Уход элемента из очереди по таймауту'
-        orders.pop(channelsCount + 1)
+        orders.pop(channels_count + 1)
 
     @action()
     def fault(time, destructive):
@@ -130,7 +108,7 @@ def mss(channelsCount, queue, streams, faults, totalTime):
             return # Авария проходит без последствий, если нет заявок в обработке
 
         # Занятые каналы
-        busy = [index for index, value in enumerate(orders) if 1 <= index <= channelsCount and value < Infinity]
+        busy = [index for index, value in enumerate(orders) if 1 <= index <= channels_count and value < Infinity]
 
         # Выбор канала, на котором происходит авария
         channel = random.choice(busy)
@@ -146,9 +124,9 @@ def mss(channelsCount, queue, streams, faults, totalTime):
     def onNew(time):
         'Появление новой заявки'
 
-        if mss.state < channelsCount: # Если есть пустые каналы,
+        if mss.state < channels_count: # Если есть пустые каналы,
             accept(time) # то принимаем заявку;
-        elif mss.state < channelsCount + queue['size']: # если их нет, но есть места в очереди -
+        elif mss.state < channels_count + queue_size: # если их нет, но есть места в очереди -
             sit(time) # направляем её в очередь.
         else: # если же и очередь забита -
             sizeout(time) # отвергаем заявку.
@@ -156,7 +134,7 @@ def mss(channelsCount, queue, streams, faults, totalTime):
     def onLeave(time, channel):
         'Канал channel освобождается заявкой'
         leave(time, channel) # Заявка уходит из канала
-        if mss.state + 1 > channelsCount: # Если очередь непуста...
+        if mss.state + 1 > channels_count: # Если очередь непуста...
             stand(time) # то из очереди вызывается первая заявка
             accept(time) # и уходит на выполнение
 
@@ -171,7 +149,7 @@ def mss(channelsCount, queue, streams, faults, totalTime):
 
     def onFault(time):
         'Неисправность'
-        fault(time, random.random() <= faults['destructive'])
+        fault(time, random.random() <= destructive)
 
     def inputCombinator():
         'Комбинация генераторов'
@@ -201,7 +179,7 @@ def mss(channelsCount, queue, streams, faults, totalTime):
     mss.prevTime = 0
 
     # Структура, хранящая местоположение заявок и операции над ними.
-    orders = [eventStream.next()] + [Infinity] * channelsCount
+    orders = [eventStream.next()] + [Infinity] * channels_count
 
     # Состояние
     mss.state = 0
@@ -213,11 +191,11 @@ def mss(channelsCount, queue, streams, faults, totalTime):
         time = orders[event]
 
         # Ограничение времени жизни модели
-        if time > totalTime:
+        if time > total_time:
             break
 
         if event:
-            if event <= channelsCount: # Завершена обработка заявки
+            if event <= channels_count: # Завершена обработка заявки
                 onLeave(time, event)
             else: # Заявка уходит из очереди по таймауту
                 onTimeout(time)
@@ -251,13 +229,13 @@ def mss(channelsCount, queue, streams, faults, totalTime):
     if absolute['total']:
       for key, value in absolute.items():
           if key != 'total':
-              relative[key] = round(value / float(absolute['total']) * 100, 2)
+              relative[key] = value / float(absolute['total']) * 100
 
-        # Среднее количество занятых каналов
+    # Среднее количество занятых каналов
     km = 0
     for channel, time in enumerate(mss.states):
-        km += channel * time if channel <= channelsCount else channelsCount * time
-    km /= totalTime
+        km += channel * time if channel <= channels_count else channels_count * time
+    km /= total_time
 
     # Среднее время пребывания заявки
     import operator
@@ -265,7 +243,7 @@ def mss(channelsCount, queue, streams, faults, totalTime):
     times = {}
 
     orderTime = sum(orders * time for orders, time in enumerate(mss.states))
-    queueTime = sum(time * orders for orders, time in enumerate(mss.states[channelsCount:]))
+    queueTime = sum(time * orders for orders, time in enumerate(mss.states[channels_count:]))
 
     if absolute['total']: # В системе
         times['total'] = round(orderTime / absolute['total'], 3)
@@ -275,22 +253,30 @@ def mss(channelsCount, queue, streams, faults, totalTime):
 
     # Среднее количество заявок
     orders = {'work': round(km, 3)}
-    orders['total'] = round(orderTime / totalTime, 3)
-    orders['queue'] = round(queueTime / totalTime, 3)
+    orders['total'] = round(orderTime / total_time, 3)
+    orders['queue'] = round(queueTime / total_time, 3)
+
+    # Итоговые показатели
+    costs = lambda n: 1 - 0.5 * n + 0.5 * n * n
+    income = {
+        'absolute': cost * absolute['accept'],
+        'relative': cost * absolute['accept'] - costs(channels_count) / cost,
+    }
 
     # Результаты работы
-    states = tuple(round(state / totalTime * 100, 3) for state in mss.states)
+    states = tuple(round(state / total_time * 100, 3) for state in mss.states)
     return {
         'quality': {
             'abs': absolute,
             'pc': relative,
         },
-        'load': {
-            'states': states,
-            'longestState': max(states),
-            'times': times,
-            'orders': orders,
-        },
+#        'load': {
+#            'states': states,
+#            'longestState': max(states),
+#            'times': times,
+#            'orders': orders,
+#        },
         'faults': mss.actions['fault'],
+        'income': income,
     }
 
