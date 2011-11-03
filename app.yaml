@@ -12,5 +12,8 @@ handlers:
   static_dir: images
 - url: /fancybox
   static_dir: fancybox
+- url: /favicon.ico
+  static_files: images/favicon.png
+  upload: images/favicon.png
 - url: /.*
   script: sm.py

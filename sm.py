@@ -15,6 +15,8 @@ from models import validator, agregator
 class Handler(webapp.RequestHandler):
     def handle_exception(self, exception, debug_mode):
         logging.error(exception)
+        self.response.clear()
+        self.response.set_status(500)
         self.response.out.write(view.internal_error())
 
 class MainPage(Handler):
@@ -63,7 +65,14 @@ class Model(Handler):
                     errors = error.message # Сохраняем текст ошибки
                 else: # Валидация успешна. Запускаем агрегатор, передавая ему модель.
                     errors = {}
-                    output = agregator.agregator(model, args)
+                    try:
+                        output = agregator.agregator(model, args)
+                    except DeadlineExceededError:
+                        logging.error('Deadline exceeded error.')
+                        self.response.clear()
+                        self.response.set_status(500)
+                        self.response.out.write(view.internal_error())
+                        return
                 
                 # Составляем входные данные.
                 input = tree.recursive_map(
@@ -128,6 +137,8 @@ class NotFound(Handler):
     'Страница не найдена'
     
     def get(self, url):
+        self.response.clear()
+        self.response.set_status(404)
         logging.error('Page "%s" was not found.' % url)
         self.response.out.write(view.notfound())
 
