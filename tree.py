@@ -12,21 +12,23 @@ def from_materialized_path(leaves):
         branch = tree
         
         tokens = path.split('.')
-        for token in tokens[:-1]:
+        for i, token in enumerate(tokens):
+            if not token:
+                raise ValueError(u'Узел дерева не имеет имени.')
+            
             if type(branch) != dict:
                 raise ValueError(u'Части дерева противоречат друг другу.')
             
             else:
-                # Создаём ветку, если её нет
                 if token not in branch:
-                    branch[token] = {}
+                    # Если ветки нет
+                    if i == len(tokens) - 1: # Если это - лист
+                        branch[token] = value
+                        break
+                    else: # Или если ветка
+                        branch[token] = {}
                 
-                # Переходим в неё
                 branch = branch[token]
-            
-        # Узел
-        token = tokens[-1]
-        branch[token] = value
     
     return tree
 

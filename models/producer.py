@@ -6,14 +6,14 @@ import distributions
 from validator import *
 from agregator import *
 
-U = (rational, unsigned, finite)
-P = (rational, positive, finite)
+U = (rational, unsigned, finite, maximum(100000))
+P = (rational, positive, finite, maximum(100000), minimum(0.00001))
 
 @aggregate(mean, min_guaranteed_profit)
 @accepts(
     instream  = P,
     operations = array(*P),
-    deviation  = P,
+    deviation  = U,
     income     = U,
     costs      = U,
     salary     = U,
@@ -26,7 +26,7 @@ def producer(instream, operations, deviation, income, costs, salary, total_time)
     work = [distributions.normal(mean, mean * deviation) for mean in operations]
     
     # Технологическая цепочка
-    chain = [[] for mean in operations]
+    chain = [[] for _ in operations]
     
     ENVIRONMENT = -1 # Новая заявка
     
@@ -116,7 +116,7 @@ def producer(instream, operations, deviation, income, costs, salary, total_time)
             'abs' : orders,
             'pc'  : dict(
                 (key, round(value / float(orders['total']) * 100, 2)) for key, value in orders.items()
-            ),
+            ) if orders['total'] > 0 else {},
         },
         'queues' : queues,
         'max_queue' : max(queues),

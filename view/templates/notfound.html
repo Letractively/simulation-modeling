@@ -1,18 +1,14 @@
-{% extends "sm.html" %}
+{% extends "message.html" %}
 
+{% block title %}Страница не найдена{% endblock title %}
 
-{% block title -%}
-  {{ title }} | {{ app.short }}
-{%- endblock %}
-
-{% block appname -%}
-    <a href="/" title="{{ app.name }}">{{ app.short }}</a>
-{%- endblock %}
-
-{% block content %}
-    <div style="padding: 0px 18px">
-        <h1>Страница не найдена</h1>
-        <img src="/images/warning.png" class="left" alt="" />
-        <p>Мы не знаем, отчего так получилось; но эта страница не найдена. Может быть, её удалили, или же её здесь вообще никогда не было. Вы можете <a href="mailto:altaisoft@gmail.com">написать нам</a> или <a href="javascript:history.back()">вернуться назад</a>.
-    </div>
-{% endblock %}
+{% block message %}
+    <img src="/images/sad.png" class="icon" alt="" />
+    <h4>Страница не найдена</h4>
+    <p>К сожалению, запрошенной Вами страницы не существует.</p>
+    <p class="variants">
+        <a href="javascript:history.back()"><button>Вернуться назад</button></a>
+        <a href="/"><button>Перейти на главную</button></a>
+        <a href="mailto:altaisoft@gmail.com"><button>Написать автору</button></a>
+    </p>
+{% endblock message %}

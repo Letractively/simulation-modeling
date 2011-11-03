@@ -153,6 +153,45 @@ class WarehouseTest(unittest.TestCase):
         }
         
         self.assertEqual(result, sample)
+        
+    def test_borders(self):
+        'Тестирование граничных значений'
+        
+        input = {
+            'demand': distributions.normal(100, 10),
+            'supply': distributions.normal(12.5, 1),
+            'amount': 1000,
+            'lot_size': 100,
+            'limit': 100,
+            'price': {
+                'supply'  : 2,
+                'storage' : 3,
+                'fine'    : 1.5,
+            },
+            'total_time': 224,
+        }
+        
+        borders = (0.000 + 0.0001, 1000 + 0.0000)
+        guard = False
+        
+        # Цикл по элементам списка input
+        for variable, value in input.items():
+            if type(value) in (float, int):
+                for input[variable] in borders + (value, ):
+                    warehouse.warehouse(**input)
+            
+            elif type(value) == dict:
+                pass
+            
+            elif value.__name__ == 'normal':
+                for a in borders + (10, ):
+                    for b in borders + (10, ):
+                        input[variable] = distributions.normal(a, b)
+                        warehouse.warehouse(**input)
+                
+                input[variable] = value
+                
+                
 
 if __name__ == '__main__':
     unittest.main()

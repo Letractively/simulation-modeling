@@ -23,6 +23,7 @@ body {
     font-size: 14px;
     
     background: #CCCCFF;
+    text-align: center;
 }
 
 img {
@@ -97,12 +98,11 @@ img {
 
 #page {
     width: 950px;
-    position: absolute;
-    left: 50%;
-    margin-left: -480px;
-    margin-top: 20px;
+    margin: 20px auto;
+    
     background: white;
     padding-bottom: 36px;
+    text-align: left;
     
     /*border: solid 1px #CCCCCC;*/
     border-radius: 18px;
@@ -676,4 +676,23 @@ sub, sup {
   visibility: hidden;
 }
 
+/* Message */
 
+#page.message {
+    width: 450px;
+    margin-top: 270px;
+    padding: 18px;
+}
+
+#page.message img.icon {
+    float: left;
+    margin-right: 18px;
+}
+
+#page.message h4 {
+    margin-top: 0;
+}
+
+#page.message .variants {
+    text-align: center;
+}

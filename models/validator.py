@@ -21,11 +21,11 @@ def accepts(**p):
 # Предикаты
 
 def non_empty(x):
-  'Непустое значение'
-  if x:
-    return x
-  else:
-    raise ValueError(u'Пожалуйста, введите что-нибудь.')
+    'Непустое значение'
+    if x:
+        return x
+    else:
+        raise ValueError(u'Пожалуйста, введите что-нибудь.')
 
 def integer(x):
     'Целое число'
@@ -77,6 +77,29 @@ def finite(x):
     else:
         return x
 
+def minimum(a):
+    'Минимум'
+    
+    def minimum(x):
+        if x < a:
+            raise ValueError(u'Число не должно быть меньше %s.' % a)
+        else:
+            return x
+    
+    return minimum
+
+def maximum(a):
+    'Максимум'
+    
+    def maximum(x):
+        if x > a:
+            raise ValueError(u'Число не должно быть больше %s.' % a)
+        else:
+            return x
+    
+    return maximum
+
+
 def array(*conditions, **key_conditions):
     'Массив значений, имеющих указанные типы'
     
@@ -88,7 +111,7 @@ def array(*conditions, **key_conditions):
         'Второй элемент списка'
         return x[1]
     
-    # Честно - сам не знаю, что это и зачем
+    # Честно - сам не знаю, что это и зачем; но работает - не трогай!
     if key_conditions:
         conditions = key_conditions
     
@@ -187,43 +210,6 @@ def conditional(condition, true_clause, false_clause):
     return conditional
 
 
-'''def distribution(conditions = {'mean' : (rational, finite), 'from' : (rational, finite), 'to' : (rational, finite)}, type = None, reverse = False):
-    def distribution(field):
-        'Распределение'
-        
-        def rotate(values):
-            for variable, value in values.items():
-                values[variable] = 1 / float(value)
-        
-        # Определим тип распределения
-        types = ('exponential', 'equal', 'normal') # Допустимые типы
-        try:
-            t = field['type']
-        except: # Тип не указан
-            t = types[0]
-        else:
-            if not (t in types):
-                raise ValueError(u'Распределение %s неизвестно.' % t)
-
-        if t == 'exponential':
-            values = validate(field, piece(conditions, ('mean', )))
-            if reverse:
-                rotate(values)
-            return distributions.exponential(values['mean'])
-        elif t == 'equal':
-            values = validate(field, piece(conditions, ('from', 'to')))
-            if reverse:
-                rotate(values)
-            return distributions.equal(*values.values())
-        else:
-            values = validate(field, piece(conditions, ('mean', )))
-            if reverse:
-                rotate(values)
-            return distributions.normal(float(field['mean']))
-
-    return distribution
-'''
-
 # Инструмент валидации
 
 def normalize(args, accepts):
@@ -242,7 +228,7 @@ def normalize(args, accepts):
     return args
 
 def validate(node, conditions):
-    'Проверка узла входных данных node по условиям preconditions'
+    'Проверка узла входных данных node по условиям conditions'
     node_type = type(conditions)
 
     # Ветвь
@@ -289,3 +275,4 @@ square = lambda x: x * x
 def piece(dictionary, keys):
     'Slicing для словарей'
     return dict((key, dictionary[key]) for key in keys if key in dictionary)
+

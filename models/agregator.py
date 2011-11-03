@@ -7,10 +7,10 @@
 # Декоратор
 def aggregate(*agregators):
     'Приделываем к модели агрегатор и добавляем элемент к её входным данным'
-    from models.validator import integer, finite, positive
+    from models.validator import integer, finite, positive, maximum
     
     def mixer(model):
-        model.accepts['times'] = (integer, finite, positive)
+        model.accepts['times'] = (integer, finite, positive, maximum(10000))
         model.agregators = agregators
         
         return model

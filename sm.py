@@ -3,15 +3,18 @@
 'Simulation modeling' # Имя приложения
 
 # GAE API и стандартные модули
+import logging
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
+from google.appengine.runtime import DeadlineExceededError
 
 # Модули приложения
 import models, tree, view
 from models import validator, agregator
 
 class Handler(webapp.RequestHandler):
-    def _handle_exception(self, exception, debug_mode):
+    def handle_exception(self, exception, debug_mode):
+        logging.error(exception)
         self.response.out.write(view.internal_error())
 
 class MainPage(Handler):
@@ -74,7 +77,7 @@ class Model(Handler):
                 self.response.out.write(
                     view.model(name, title, input, output, self.request.body)
                 )
-
+    
     get = post = request
 
 class Help(Handler):
@@ -124,7 +127,8 @@ class UrlShortener(Handler):
 class NotFound(Handler):
     'Страница не найдена'
     
-    def get(self):
+    def get(self, url):
+        logging.error('Page "%s" was not found.' % url)
         self.response.out.write(view.notfound())
 
 # Определение списка страниц
@@ -135,7 +139,7 @@ routes = [
     ('^/help/(%s)/*' % model_list, Help),
     ('^/(%s)/*' % model_list, Model),
     ('^/*$', MainPage),
-    ('^.*$', NotFound),
+    ('^(.*)$', NotFound),
 ]
 
 # Запуск приложения

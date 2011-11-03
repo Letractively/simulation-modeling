@@ -8,8 +8,8 @@ from models.agregator import *
 RPF = (rational, positive, finite)
 RUF = (rational, unsigned, finite)
 
-IUF = (integer, unsigned, finite)
-IPF = (integer, positive, finite)
+IUF = (integer, unsigned, finite, maximum(100000))
+IPF = (integer, positive, finite, maximum(100000), minimum(0.00001))
 
 @aggregate(mean, max_guaranteed_costs)
 @accepts(
