@@ -1,0 +1,36 @@
+{% macro color(color, style) -%}
+    <span class="color" style="background: {{ color }}{{ '; ' + style if style }}">&nbsp;</span>
+{%- endmacro %}
+
+{% macro unit(unit) -%}
+    <span class="unit">{{ unit }}</span>
+{%- endmacro %}
+
+{% macro methodic() -%}
+    <a href="http://fdo.tusur.ru/study/library/info.php?id=1855239E5B1EFD1DC62572600034B9C1">Мицель А. А., Грибанова Е. Б. Имитационное моделирование экономических процессов. Учебно-методическое пособие. Томск: ТМЦ ДО, 2007</a>
+{%- endmacro %}
+
+{% macro book() -%}
+    <a href="http://fdo.tusur.ru/study/library/info.php?id=AE82A6226422FAF3C6257260003504A7">Мицель А. А., Грибанова Е. Б. Имитационное моделирование экономических процессов. Учебное пособие. Томск: ТМЦ ДО, 2007</a>
+{%- endmacro %}
+
+{% macro snapshot(image, thumbnail, link, title) %}
+    <div class="figure snapshot">
+        <img src="{{ thumbnail if thumbnail else image }}" alt="{{ title }}" />
+        
+        {% if title %}
+            <div class="caption">
+                <ul class="controls">
+                    {% if thumbnail and image %}
+                        <li><a rel="fancybox" href="{{ image }}" title="{{ title }}">Увеличить</a></li>
+                    {% endif %}
+                    {% if link %}
+                        <li><a href="{{ link }}" target="_blank">Запустить модель</a></li>
+                    {% endif %}
+                </ul>
+                {{ title }}
+            </div>
+        {% endif %}
+    </div>
+{% endmacro %}
+

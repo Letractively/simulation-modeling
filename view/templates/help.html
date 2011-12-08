@@ -1,5 +1,5 @@
 {% extends "sm.html" %}
-{% import "form.html" as form %}
+{% from "macros.html" import book, methodic, snapshot %}
 
 {% block title -%}
     {{ title }} | Справка | {{ app.short }}
@@ -29,20 +29,23 @@
     </div>
 {% endblock %}
 
-{% block content %}
-    <div class="aside right">
-        <div class="block menu">
+{#         <div class="block menu">
             <div class="title">Ссылки</div>
             <ul>
                 <li>
-                    <a href="http://fdo.tusur.ru/study/library/info.php?id=1855239E5B1EFD1DC62572600034B9C1" title="Мицель А. А., Грибанова Е. Б. Имитационное моделирование экономических процессов. Учебно-методическое пособие. Томск: ТМЦ ДО, 2007">Учебно-методическое пособие</a>
+                    
                 </li>
                 
                 <li>
-                    <a href="http://fdo.tusur.ru/study/library/info.php?id=AE82A6226422FAF3C6257260003504A7" title="Мицель А. А., Грибанова Е. Б. Имитационное моделирование экономических процессов. Учебное пособие. Томск: ТМЦ ДО, 2007">Учебное пособие</a>
+                    
                 </li>
             </ul>
         </div>
+#}
+
+{% block content %}
+    <div class="aside right">
+
     </div>
     
     <div id="content" class="aside-right">

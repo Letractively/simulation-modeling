@@ -91,12 +91,27 @@ function no_faults() {
     document.getElementById("destructive").value = "0";
 }
 
+function form_toggle(input, off_value) {
+    checkbox = document.getElementById(input + '.toggle');
+    input = document.getElementById(input);
+    
+    if (!checkbox.checked) {
+        input.value = off_value;
+    }
+}
+
 /* FancyBox */
 $(document).ready(function() {
     $("a#permalink").fancybox({
         'width'  : 180,
         'height' : 180,
         'titlePosition': 'inside',
+    });
+    
+    $("a[rel='fancybox']").fancybox({
+        'titlePosition': 'outside',
+        'transitionIn': 'elastic',
+        'transitionOut': 'elastic',
     });
 })
 

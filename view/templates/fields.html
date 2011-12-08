@@ -1,0 +1,14 @@
+{% macro field(field, unit) %}
+    <div class="row">
+
+        {{ field.label }}
+        
+        <span class="unit">{{ unit|d('&nbsp;') }}</span>
+        
+        {% if field.errors %}
+            <div class="balloon">{{ field.errors[0] }}</div>
+        {% endif %}
+        {{ field(class_='text') }}
+        
+    </div>
+{% endmacro %}

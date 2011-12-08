@@ -1,130 +1,179 @@
 {% extends "model.html" %}
-{% import "form.html" as form %}
+{% from "fields.html" import field %}
+{% from "macros.html" import color, unit %}
 
 {% block input %}
-  <div class="block aside left properties">
-    <div class="title">Параметры</div>
-    <form action="/mss" method="post" class="properties">
-        {{ form.input(input.channels_count, "channels_count", label='Число каналов:') }}
-        {{ form.input(input.total_time, "total_time", label='Продолжительность:', unit='ч') }}
-        {{ form.input(input.times, "times", label='Число итераций:') }}
-        
-        <fieldset>
-            <div class="legend">Заявки</div>
-            {{ form.input(input.in_stream, "in_stream", label='Поступает, в час:', unit='шт') }}
-            {{ form.input(input.out_stream, "out_stream", label='Обрабатывается, в час:', unit='шт') }}
-            {{ form.input(input.cost, "cost", label='Средний доход:', unit='р') }}
-        </fieldset>
-        
-        <fieldset>
-            <div class="legend">Очередь</div>
-            {{ form.input(input.queue_size, "queue_size", label='Размер:', unit='мест') }}
-            {{ form.input(input.queue_time, "queue_time", label='Время ожидания:', unit='ч') }}
-        </fieldset>
-        
-        <fieldset>
-            <div class="legend">Отказы <input type="button" onclick="no_faults()" value="Отказов нет" class="right" /></div>
-            {{ form.input(input.fault_stream, "fault_stream", label='Наработка на отказ:', unit='ч') }}
-            {{ form.input(input.repair_stream, "repair_stream", label='Время ремонта:', unit='ч') }}
-            {{ form.input(input.destructive, "destructive", label='Вероятность аварии:', unit='ч') }}
-        </fieldset>
-
-        <div class="row submit">
-            <input type="reset" value="Сбросить" />
-            <input type="submit" value="Считать" />
-        </div>
-    </form>
-  </div>
+    <div class="block aside left properties">
+        <div class="title">Параметры</div>
+        <form action="/mss" method="post" class="properties">
+            {{ field(form.channels_count) }}
+            {{ field(form.total_time, unit='ч') }}
+            {{ field(form.times) }}
+            <fieldset>
+                <div class="legend">Заявки</div>
+                {{ field(form.in_stream, unit='шт') }}
+                {{ field(form.out_stream, unit='шт') }}
+                {{ field(form.cost, unit='р') }}
+            </fieldset>
+            <fieldset>
+                <div class="legend">Очередь</div>
+                {{ field(form.queue_size, unit='мест') }}
+                {{ field(form.queue_time, unit='ч') }}
+            </fieldset>
+            <fieldset>
+                <div class="legend">Отказы</div>
+                {{ field(form.fault_stream, unit='ч') }}
+                {{ field(form.repair_stream, unit='ч') }}
+                {{ field(form.repair_cost, unit='р') }}
+                {{ field(form.destructive) }}
+            </fieldset>
+            <div class="row submit">
+                <input type="reset" value="Сбросить" />
+                <input type="submit" value="Считать" />
+            </div>
+        </form>
+    </div>
 {% endblock %}
-  
+
+{% block statistics %}
+    <div class="block">
+        <div class="title">Статистика работы системы</div>
+        <table class="content">
+        <tbody>
+            <tr>
+                <th>Всего поступило заявок</th>
+                <td>{{ requests.total|round(2) }}{{ unit('шт') }}</td>
+                <td rowspan="6">
+                    {{ requests_diagram }}
+                </td>
+            </tr>
+            
+            <tr>
+                <th class="nested">
+                    {{ color('#1560BD', style="box-shadow: inset 6px 0px 0px #FBFF53, inset -6px 0px 0px #FF4D6F") }}
+                    Из них не обработано</th>
+                <td>{{ requests.denied.total|round(2) }}{{ unit('шт') }}</td>
+            </tr>
+            
+            <tr>
+                <th class="nested twice">{{ color('#FBFF53') }} По времени ожидания</th>
+                <td>{{ requests.denied.timeout|round(2) }}{{ unit('шт') }}</td>
+            </tr>
+            
+            <tr>
+                <th class="nested twice">{{ color('#1560BD') }} По размеру очереди</th>
+            	<td>{{ requests.denied.sizeout|round(2) }}{{ unit('шт') }}</td>
+            </tr>
+            
+            <tr>
+                <th class="nested twice">{{ color('#FF4D6F') }} По концу рабочего времени</th>
+                <td>{{ requests.denied.shutdown|round(2) }}{{ unit('шт') }}</td>
+            </tr>
+            
+            <tr>
+                <th class="nested">{{ color('#008090') }} Обработано</th>
+                <td>{{ requests.accepted|round(2) }}{{ unit('шт') }}</td>
+            </tr>
+            
+            {% if faults %}
+                <tr><th colspan="3" class="section">Отказы</th></tr>
+                <tr><th>Количество отказов</th><td>{{ faults.total|round(2) }}</td><td rowspan="2"></td></tr>
+                <tr><th class="nested">Из них аварий</th><td>{{ faults.fatal|round(2) }}</td></tr>
+            {% endif %}
+            
+            <tr><th colspan="3" class="section">Доходы и расходы</th></tr>
+            
+            <tr>
+                <th>{{ color('#008090') }} Выручка</th>
+                <td>{{ balance.accepted|round(2) }}{{ unit('р') }}</td>
+                <td rowspan="{{ '4' if faults else '3' }}">
+                    {{ income_diagram }}
+                </td>
+            </tr>
+            
+            <tr>
+                <th class="nested">{{ color('#999999') }} Постоянные расходы</th>
+                <td>{{ balance.costs|round(2) }}{{ unit('р') }}</td>
+            </tr>
+            
+            {% if faults %}
+            <tr>
+                <th class="nested">{{ color('#000000') }} Расходы на ремонт</th>
+                <td>{{ balance.repairs|round(2) }}{{ unit('р') }}</td>
+            </tr>
+            {% endif %}
+            
+            <tr>
+                <th class="nested">{{ color('#8F007E') }} Чистая прибыль</th>
+                <td>{{ balance.income|round(2) }}{{ unit('р') }}</td>
+            </tr>
+            
+            <tr>
+                <th class="section" colspan="2">Средний доход</th>
+                <th class="section">Средняя относительная прибыль</th>
+            </tr>
+            
+            <tr>
+                <td class="poster" colspan="2">{{ balance.income|round(2) }} {{ unit('р') }}</td>
+                <td class="poster">{{ balance.relative_income|round(2) }}</td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block workload %}
+    <div class="block">
+        <div class="title">Вероятностное распределение количества заявок в системе</div>
+        <div class="content" style="text-align: center">
+            {{ workload_diagram }}
+        </div>
+        
+        <table class="content">
+            <tr>
+                <th colspan="2">
+                    {{ color('rgba(0, 128, 144, 85)') }} Заявки, находящиеся в обработке;
+                </th>
+            </tr>
+            <tr>
+                <th colspan="2">
+                    {{ color('rgba(255, 77, 111, 85)') }} Заявки, находящиеся в очереди.
+                </th>
+            </tr>
+            <tr>
+                <th class="section">Математическое ожидание</th>
+                <th class="section">Вероятность</th>
+            </tr>
+            <tr>
+                <td class="poster">{{ workload_mean|round(2) }} {{ unit('шт') }}</td>
+                <td class="poster">{{ workload_mean_probability|round(2) }}%</td>
+            </tr>
+        </table>
+    </div>
+{% endblock workload %}
+
+{% block no_requests %}
+    <div class="block">
+        <div class="title">Невозможно построить статистику</div>
+        <div class="content">
+            В систему массового обслуживания не поступило ни одной заявки. Пожалуйста, измените исходные данные, чтобы в систему поступила хотя бы одна заявка, или <a href="javascript:window.location.reload()">попробуйте провести расчёт ещё раз</a>.
+        </div>
+    </div>
+{% endblock %}
+
 {% block output %}
-    {% with %}
-        {% if output.agregated %}
-            {% set output = output.mean %}
-        {% endif %}
-        <div class="block">
-          <div class="title">Статистика заявок</div>
-          <div class="content" style="padding: 0px">
-            <table style="border-bottom-left-radius: 18px; border-bottom-right-radius: 18px; margin: 0px; width: 100%; border-top-style: hidden; border-left-style: hidden; border-right-style: hidden; margin-bottom: 18px;">
-              <tbody>
-                <tr>
-                  <th>Всего поступило</th>
-                  <td>{{ output.quality.abs.total|round(2) }}<span class="unit">шт</span></td>
-                  <td rowspan="6">
-                    <img alt="Качество работы системы" class="chart" style="width: 270px; height: 172px; margin: 9px 0px;" src="http://chart.apis.google.com/chart?cht=p&amp;chs=270x172&amp;chl={{ output.quality.pc.accept|round(2) }}%25|{{ output.quality.pc.timeout|round(2) }}%25|{{ output.quality.pc.sizeout|round(2) }}%25|{{ output.quality.pc.shutdown|round(2) }}%25&amp;chco=008090,FBFF53,1560BD,FF4D6F&amp;chds=0,{{ output.quality.abs.total }}&amp;chd=t:{{ output.quality.abs.accept }},{{ output.quality.abs.timeout }},{{ output.quality.abs.sizeout }},{{ output.quality.abs.shutdown }}" />
-                  </td>
-                </tr>
-                <tr>
-                  <th class="nested">
-                    <span class="color" style="background: #008090">&nbsp;</span>
-                    Принято
-                  </th>
-                  <td>{{ output.quality.abs.accept|round(2) }}<span class="unit">шт</span></td>
-                </tr>
-                <tr>
-                  <th class="nested">
-                    <span class="color" style="background: #1560BD; box-shadow: inset 6px 0px 0px #FBFF53, inset -6px 0px 0px #FF4D6F">&nbsp;</span>
-                    Отклонено
-                  </th>
-                  <td>{{ output.quality.abs.reject|round(2) }}<span class="unit">шт</span></td>
-                </tr>
-                
-                <tr>
-                  <th class="nested twice">
-                    <span class="color" style="background: #FBFF53">&nbsp;</span>
-                    По времени ожидания
-                  </th>
-                  <td>{{ output.quality.abs.timeout|round(2) }}<span class="unit">шт</span></td>
-                </tr>
-                
-                <tr>
-                  <th class="nested twice">
-                    <span class="color" style="background: #1560BD">&nbsp;</span>
-                    По длине очереди
-                  </th>
-                  <td>{{ output.quality.abs.sizeout|round(2) }}<span class="unit">шт</span></td>
-                </tr>
-                
-                <tr>
-                  <th class="nested twice">
-                    <span class="color" style="background: #FF4D6F">&nbsp;</span>
-                    По исчерпанию времени
-                  </th>
-                  <td>{{ output.quality.abs.shutdown|round(2) }}<span class="unit">шт</span></td>
-                </tr>
-                
-                <tr>
-                    <th class="section" colspan="2">Средний доход</th>
-                    <th class="section">Средняя относительная прибыль</th>
-                </tr>
-                
-                <tr>
-                    <td class="poster" colspan="2">{{ output.income.absolute|round(2) }} <span class="unit">р</span></td>
-                    <td class="poster">{{ output.income.relative|round(2) }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        
-        
-        
-    {#
-        <div class="block">
-          <div class="title">Степень загрузки системы</div>
-          <div class="content">
-            <img alt="Состояния системы по их вероятности" class="chart" src="http://chart.apis.google.com/chart?cht=lc&amp;chs=540x212&amp;chds=0,{{ output.load.longestState }}&amp;chxt=y,x&amp;chm=B,CCCCFF,0,0,0&amp;chxr=0,0,{{ output.load.longestState }}|1,0,{{ output.load.states|length + 1 }}&amp;chco=1560BD&amp;chd=t:{{ output.load.states|join(",") }}">
-            <p>По оси абсцисс отложено количество заявок, которое находится в системе. По оси ординат отложено время, в течение которого в системе было именно столько заявок, в процентах к общей продолжительности работы. <strong>FIXME</strong>.</p>
-          </div>
-        </div>
-    #}
-    {% endwith %}
+    {% if requests.total %} {# Если есть хоть одна заявка #}
+        {{ self.statistics() }}
+        {{ self.workload() }}
+    {% else %} {# Если ничего нет, печатаем текст #}
+        {{ self.no_requests() }}
+    {% endif %}
 {% endblock %}
 
 {% block about %}
     <div id="content">
         <h1>Система массового обслуживания</h1>
-        <p>Система массового обслуживания &mdash; одна из наиболее часто встречающихся моделей в экономике.</p>
-        <p><em><strong>TODO:</strong> не забыть воды налить</em>
+        <p>Система массового обслуживания &mdash; одна из наиболее часто встречающихся моделей в экономике. Она заключается в следующем. Имеется поток заявок (заказов, клиентов), которые требуют обслуживания, и имеется некоторое количество каналов (операторов), в которых они могут быть обслужены. Известно, как часто приходят новые клиенты, и известно, сколько в среднем времени занимает обслуживание каждого из них. Модель рассчитывает, сколько клиентов будет обслужено, а сколько мы обслужить не успеем.</p>
+        <p>Пример расчёта можно посмотреть <a href="http://goo.gl/GLJKr">здесь</a>, а справку по использованию модели <a href="/help/mss">вот здесь</a>.
     </div>
 {% endblock %}

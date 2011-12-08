@@ -203,6 +203,15 @@ img {
     width: 270px;
 }
 
+/* Sidenote block */
+.sidenote {
+    width: 261px;
+    
+    float: right;
+    margin-right: -298px;
+    font-size: 90%;
+}
+
 /* Alignment */
 
 .right { float: right }
@@ -251,7 +260,7 @@ ul#models li .inner .caption {
 
 /* adjust a 128x128 picture to the grid */
 ul#models li img {
-    margin-top: 7px;
+    margin: 7px;
     margin-bottom: 4px;
 }
 
@@ -337,6 +346,15 @@ table caption {
 
 .nested.twice {
     padding-left: 36px;
+}
+
+/* Table as a block content */
+
+table.content {
+    width: 100%;
+    
+    margin: -1px;
+    margin-bottom: 16px;
 }
 
 /* Properties editor */
@@ -476,7 +494,7 @@ table.properties .unit {
     height: 30px;
     padding: 3px 9px;
     margin-top: -36px;
-    margin-right: -180px;
+    margin-right: -190px;
     z-index: 10;
     
     text-align: left;
@@ -548,6 +566,7 @@ table.properties .unit {
     display: inline-block;
 
     margin: 9px 0;
+    width: 100%;
 }
 
 .figure.chart {
@@ -559,14 +578,16 @@ table.properties .unit {
 }
 
 .figure img {
-    margin: 9px;
+    margin: 18px;
 }
 
 .figure .caption {
+    text-align: left;
     padding: 9px;
-    margin: 0 9px;
+    margin: 0px;
+    box-shadow: 0px -1px 5px #CCCCCC;
     
-    /*background: #EEEEEE;*/
+    background: #EEEEEE;
     border-bottom-left-radius: 9px;
     border-bottom-right-radius: 9px;
     border-top: solid 1px #CCCCCC;
@@ -575,6 +596,20 @@ table.properties .unit {
     font-family: Arial;
     text-decoration: none;
     text-shadow: 1px 1px 2px #CCCCCC;
+}
+
+.figure .caption .controls {
+    float: right;
+    padding: 0;
+    margin: 0;
+    
+    list-style-type: none;
+}
+
+.figure .caption .controls li {
+    display: inline-block;
+    padding: 0;
+    margin: 0px 9px;
 }
 
 /* Blockquote */
@@ -662,13 +697,13 @@ sub, sup {
     color: #CC0000;
     font-family: Arial;
     font-size: 24px;
-    margin: 18px;
+    /*margin: 18px;*/
     text-align: center !important;
     width: 100%;
     padding: 18px;
 }
 
-.clearfix:after {
+.clearfix:after, #output:after {
   content: ".";
   display: block;
   height: 0;
@@ -696,3 +731,15 @@ sub, sup {
 #page.message .variants {
     text-align: center;
 }
+
+.toggle {
+    margin: 0;
+    border: solid 1px #CCCCCC;
+    border-radius: 3px;
+    color: #CC0000;
+}
+
+/* Definition lists */
+
+
+

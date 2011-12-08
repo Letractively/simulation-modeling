@@ -3,23 +3,10 @@
 'Производственная фирма'
 
 import distributions
-from validator import *
-from agregator import *
+from aggregator import *
 
-U = (rational, unsigned, finite, maximum(100000))
-P = (rational, positive, finite, maximum(100000), minimum(0.00001))
-
-@aggregate(mean, min_guaranteed_profit)
-@accepts(
-    instream  = P,
-    operations = array(*P),
-    deviation  = U,
-    income     = U,
-    costs      = U,
-    salary     = U,
-    total_time = P,
-)
-def producer(instream, operations, deviation, income, costs, salary, total_time):
+@aggregate()
+def producer(instream, operations, deviation, income, costs, salary, total_time, times=1):
     u'Производственная фирма'
     
     # Генераторы событий

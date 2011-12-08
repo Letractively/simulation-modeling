@@ -2,35 +2,40 @@
 
 'Система массового обслуживания'
 
-import random, math, distributions
-from models.validator import *
-from models.agregator import *
+import random, math, distributions, tree
+from models.aggregator import aggregate
 
-# Условия для распределений
-conditions = (rational, positive, finite)
-inverse_conditions = (rational, positive, finite, inverse)
-
-@aggregate(mean)
-@accepts(
-        channels_count=(integer, positive), # Количество каналов
-
-        # Очередь
-        queue_size=(integer, unsigned), # Максимальный размер очереди
-        queue_time=(rational, unsigned), # Максимальное время ожидания
-
-        # Потоки
-        in_stream=exponential_distribution(inverse_conditions), # Заявки
-        out_stream=exponential_distribution(inverse_conditions), # Обслуживания
-        cost=(rational, unsigned, finite), # Стоимость обработки заявки
-
-        fault_stream=conditional(lambda x: x == u'∞', const_generator(Infinity), exponential_distribution(conditions)), # Проблемы
-        repair_stream=conditional(lambda x: x == u'0', const_generator(0), exponential_distribution(conditions)), # Ремонты
-        destructive=(rational, probability), # Доля аварий
-
-        total_time=(rational, positive), # Продолжительность моделирования
-)
-def mss(channels_count, queue_size, queue_time, in_stream, out_stream, cost, fault_stream, repair_stream, destructive, total_time):
+@aggregate()
+def mss(channels_count, in_stream, out_stream, cost, total_time, queue_size=None, queue_time=None, fault_stream=None, repair_stream=None, destructive=None, repair_cost=None, times=1):
     u'Система массового обслуживания'
+    
+    Infinity = float('inf')
+    
+    if queue_size is None:
+        queue_size = Infinity
+    
+    if queue_time is None:
+        queue_time = Infinity
+    
+    if fault_stream is None:
+        fault_stream = Infinity
+    
+    if repair_stream is None:
+        repair_stream = 0
+    
+    if destructive is None:
+        destructive = 0
+    
+    if repair_cost is None:
+        repair_cost = 0
+    
+    stream = distributions.filter(lambda x: x > 0, distributions.exponential)
+    
+    in_stream = stream(1.0 / in_stream)
+    out_stream = stream(1.0 / out_stream)
+    
+    fault_stream = stream(fault_stream)
+    repair_stream = stream(repair_stream)
     
     # Действия
     mss.actions = {}
@@ -118,8 +123,9 @@ def mss(channels_count, queue_size, queue_time, in_stream, out_stream, cost, fau
 
         if destructive: # Если случилась авария,
             orders[channel] += out_stream.next() # Заявка ещё и обрабатывается заново
+            mss.actions['destructive_fault'] = mss.actions.get('destructive_fault', 0) + 1
 
-        # События
+    # События
 
     def onNew(time):
         'Появление новой заявки'
@@ -202,81 +208,63 @@ def mss(channels_count, queue_size, queue_time, in_stream, out_stream, cost, fau
         else: # Независимое событие (новая заявка или неисправность)
             onDispatch(time) # уходит на диспетчеризацию.
 
-        # Время истекло, но в обработке и в очереди ещё могли остаться заявки.
+    # Время истекло, но в обработке и в очереди ещё могли остаться заявки.
     mss.actions['shutdown'] = mss.state
 
-    # Качество работы СМО
-    rejectedFields = (  # Заявки, отклонённые:
-                        'timeout', # По таймауту
-                        'sizeout', # По размеру очереди
-                        'shutdown',         # По окончанию рабочего времени
-    )
-
-    # Количество заявок, отменённых по каждой из причин
-    absolute = {}
-    for field in rejectedFields:
-        absolute[field] = mss.actions[field]
-
-    # Все отменённые заявки
-    absolute['reject'] = sum(absolute.values())
-
-    # Принятые заявки и все заявки, прошедшие через систему
-    absolute['accept'] = mss.actions['accept']
-    absolute['total'] = absolute['reject'] + absolute['accept']
-
-    # Значения в процентах
-    relative = {}
-    if absolute['total']:
-      for key, value in absolute.items():
-          if key != 'total':
-              relative[key] = value / float(absolute['total']) * 100
-
-    # Среднее количество занятых каналов
-    km = 0
-    for channel, time in enumerate(mss.states):
-        km += channel * time if channel <= channels_count else channels_count * time
-    km /= total_time
-
-    # Среднее время пребывания заявки
-    import operator
-
-    times = {}
-
-    orderTime = sum(orders * time for orders, time in enumerate(mss.states))
-    queueTime = sum(time * orders for orders, time in enumerate(mss.states[channels_count:]))
-
-    if absolute['total']: # В системе
-        times['total'] = round(orderTime / absolute['total'], 3)
-
-    if mss.actions['sit']: # В очереди
-        times['queue'] = round(queueTime / mss.actions['sit'], 3)
-
-    # Среднее количество заявок
-    orders = {'work': round(km, 3)}
-    orders['total'] = round(orderTime / total_time, 3)
-    orders['queue'] = round(queueTime / total_time, 3)
-
-    # Итоговые показатели
-    costs = lambda n: 1 - 0.5 * n + 0.5 * n * n
-    income = {
-        'absolute': cost * absolute['accept'],
-        'relative': cost * absolute['accept'] - costs(channels_count) / cost,
+    # Сбор статистики.
+    # Сначала собирается баланс доходов и расходов. Он имеет следующую
+    # структуру:
+    # - Все прошедшие через систему заявки
+    #   - Принятые
+    #   - Не принятые
+    #       - По размеру очереди
+    #       - По времени ожидания
+    #       - По рабочему времени
+    
+    denied = dict((field, mss.actions[field]) for field in ('sizeout', 'timeout', 'shutdown'))
+    denied['total'] = sum(denied.values())
+    
+    requests = {
+        'denied': denied,
+        'accepted': mss.actions['accept'],
+        'total': mss.actions['accept'] + denied['total'],
     }
-
-    # Результаты работы
-    states = tuple(round(state / total_time * 100, 3) for state in mss.states)
-    return {
-        'quality': {
-            'abs': absolute,
-            'pc': relative,
-        },
-#        'load': {
-#            'states': states,
-#            'longestState': max(states),
-#            'times': times,
-#            'orders': orders,
-#        },
-        'faults': mss.actions['fault'],
-        'income': income,
+    
+    # Теперь следующий шаг - статистика по балансу. Она имеет точно такую же
+    # структуру, но добавляется пункт costs -- затраты на обслуживание системы,
+    # заданные функцией от количества каналов.
+    balance = tree.recursive_map(lambda x: x * cost, requests)
+    
+    balance['repairs'] = mss.actions['fault'] * repair_cost
+    
+    costs_function  = lambda n: 1 - 0.5 * n + 0.5 * n * n
+    costs = costs_function(channels_count)
+    
+    balance['costs'] = costs
+    balance['income'] = balance['accepted'] - costs - balance['repairs']
+    
+    balance['relative_income'] = requests['accepted'] - costs / cost
+    
+    # Теперь статистика по загрузке каналов и очереди -- распределение
+    # вероятностей состояний системы. Для каждого из состояний указывается
+    # вероятность пребывания системы в нём.
+    workload = [time / total_time * 100 for time in mss.states]
+    
+    workload_mean = sum(n * p / total_time for n, p in enumerate(mss.states))
+    
+    output = {
+        'requests': requests,
+        'balance': balance,
+        'workload': workload,
+        'workload_mean': workload_mean,
+        'workload_mean_probability': workload[int(round(workload_mean))],
     }
+    
+    if mss.actions['fault']:
+        output['faults'] = {
+            'total': mss.actions['fault'],
+            'fatal': mss.actions.get('destructive_fault', 0),
+        }
+    
+    return output
 

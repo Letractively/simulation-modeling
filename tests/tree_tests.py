@@ -2,11 +2,11 @@
 
 'Тесты для модуля tree'
 
-import os, sys, operator
+import os, sys, operator, unittest
 tests = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.dirname(tests))
 
-import tree, unittest
+import tree
 
 class FromMaterializedPathTest(unittest.TestCase):
     'Стуктура входных данных'

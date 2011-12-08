@@ -3,7 +3,6 @@
 'Тесты для модели производственной фирмы'
 
 import os, sys, unittest
-from copy import deepcopy
 tests = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.dirname(tests))
 

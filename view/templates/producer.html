@@ -53,13 +53,13 @@
                 <tr>
                     <th>Всего</th>
                     <td>
-                        {{ output.quality.abs.total }}
+                        {{ output.quality.abs.total|round(2) }}
                         <span class="unit">заявок</span>
                     </td>
                     
                     <th>Выручка</th>
                     <td>
-                        {{ output.balance.processed }}
+                        {{ output.balance.processed|round(2) }}
                         <span class="unit">руб</span>
                     </td>
                 </tr>
@@ -69,12 +69,12 @@
                         Принято
                     </th>
                     <td>
-                        {{ output.quality.abs.processed }}
+                        {{ output.quality.abs.processed|round(2) }}
                         <span class="unit">заявок</span>
                     </td>
                     <th>Чистая прибыль</th>
                     <td>
-                        {{ output.balance.total }}
+                        {{ output.balance.total|round(2) }}
                         <span class="unit">руб</span>
                     </td>
                 </tr>
@@ -84,13 +84,13 @@
                         Отклонено
                     </th>
                     <td>
-                        {{ output.quality.abs.rejected }}
+                        {{ output.quality.abs.rejected|round(2) }}
                         <span class="unit">заявок</span>
                     </td>
                     
                     <th>Упущенная прибыль</th>
                     <td>
-                        {{ output.balance.rejected }}
+                        {{ output.balance.rejected|round(2) }}
                         <span class="unit">руб</span>
                     </td>
                 </tr>
@@ -101,7 +101,7 @@
                 </tr>
                 
                 <tr>
-                    <td class="poster" style="padding: 18px" colspan="2">{{ output.factor }}</td>
+                    <td class="poster" style="padding: 18px" colspan="2">{{ output.factor|round(2) }}</td>
                     <td class="poster" colspan="2">{{ mgc|round(2) }}</td>
                 </tr>
             </tbody>

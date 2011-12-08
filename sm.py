@@ -10,10 +10,9 @@ from google.appengine.runtime import DeadlineExceededError
 
 # Модули приложения
 import models, tree, view
-from models import validator, agregator
 
 class Handler(webapp.RequestHandler):
-    def handle_exception(self, exception, debug_mode):
+    def _handle_exception(self, exception, debug_mode):
         logging.error(exception)
         self.response.clear()
         self.response.set_status(500)
@@ -43,49 +42,37 @@ class Model(Handler):
         
         title = model.__doc__
         
+        # Загрузка формы
+        ModelForm = getattr(__import__('forms.' + name, fromlist=['forms']), 'ModelForm')
+        
+        # Загрузка представления
+        try:
+            show = getattr(view, name)
+        except:
+            show = view.model
+        
         # Входной запрос
         query = self.request.POST or self.request.GET
         
-        if not query: # Если запрос пуст - просто выводим пустую страницу модели.
-            self.response.out.write(view.model(name, title))
-        else: # Необходимо обработать запрос.
-            # 1. Переводим его в дерево параметров и удаляем лишние, если есть.
-            raw_args = tree.from_materialized_path(query)
-            raw_args = validator.normalize(raw_args, model.accepts)
-            
-            # 2. Проверяем и очищаем параметры.
-            if not raw_args: # Если после удаления лишнего ничего не осталось -
-                self.response.out.write(view.model(name, title)) # выводим пустую страницу
-            else: # Проверка параметров.
+        form = ModelForm(query)
+        if not query:
+            # Выводим пустую форму. Никаких расчётов, просто запрос view.
+            self.response.out.write(show(name, title, form=form))
+        else:
+            # Проводим валидацию запроса.
+            if form.validate(): # Ошибок нет. Вызываем модель.
                 try:
-                    args = validator.validate(raw_args, model.accepts)
-                except Exception, error: # Валидация обнаружила ошибку error
-                    args = {}
-                    output = {}
-                    errors = error.message # Сохраняем текст ошибки
-                else: # Валидация успешна. Запускаем агрегатор, передавая ему модель.
-                    errors = {}
-                    try:
-                        output = agregator.agregator(model, args)
-                    except DeadlineExceededError:
-                        logging.error('Deadline exceeded error.')
-                        self.response.clear()
-                        self.response.set_status(500)
-                        self.response.out.write(view.internal_error())
-                        return
-                
-                # Составляем входные данные.
-                input = tree.recursive_map(
-                    lambda arg, error:
-                        {'value' : arg, 'error' : error} if error else arg,
-                    raw_args,
-                    errors
-                )
-                
-                # Выводим страницу
-                self.response.out.write(
-                    view.model(name, title, input, output, self.request.body)
-                )
+                    output = aggregator.aggregator(model, form.data)
+                except DeadlineExceededError:
+                    logging.error('Deadline exceeded error.')
+                    self.response.set_status(500)
+                    self.response.out.write(view.internal_error())
+                else:
+                    query_pairs = ('%s=%s' % (item, value) for item, value in query.items())
+                    query_string = '&amp;'.join(query_pairs)
+                    self.response.out.write(show(name, title, form=form, output=output, query=query_string))
+            else:
+                self.response.out.write(show(name, title, form=form))
     
     get = post = request
 

@@ -7,8 +7,7 @@ import random, math
 def normal(mu, sigma):
   '''Нормальное распределение.
   
-  mu - математическое ожидание, а sigma - стандартное (среднеквадратическое)
-  отклонение.
+  mu - математическое ожидание, а sigma - стандартное (среднеквадратическое) отклонение.
   
   Возвращает генератор бесконечной последовательности случайных чисел.
   '''
@@ -46,4 +45,20 @@ def exponential(mean):
 
   while True:
     yield - math.log(random.random()) * float(mean)
+
+def filter(satisfactory, generator):
+    def filter(*args):
+        stream = generator(*args)
+        
+        value = next(stream)
+        while satisfactory(value):
+            yield value
+            value = next(stream)
+        
+    return filter
+
+def inverse(generator):
+    for value in generator:
+        value = 1.0 / value
+        yield value
 

@@ -1,56 +1,37 @@
 {% extends "model.html" %}
-{% import "form.html" as form %}
+{% from "fields.html" import field %}
+{% from "macros.html" import color, unit %}
 
 {% block input %}
     <div class="block aside left properties">
         <div class="title">Параметры</div>
         <form action="/warehouse" method="post" class="properties">
-            {{ form.input(input.lot_size, "lot_size", label='Размер партии:', unit='шт') }}
-            {{ form.input(input.limit, "limit", label='Минимальный запас:', unit='шт') }}
-            {{ form.input(input.amount, "amount", label='Начальный запас:', unit='шт') }}
-            {{ form.input(input.total_time, "total_time", label='Период работы:', unit='ч') }}
-            {{ form.input(input.times, "times", label='Число итераций:') }}
-            <fieldset>
-                <div class="legend">Спрос, в час</div>
-                
-                {% with %}
-                    {% if input.demand is defined %}
-                        {% set demand = input.demand %}
-                    {% else %}
-                        {% set demand = {'mu' : '', sigma : ''} %}
-                    {% endif %}
-                    {{ form.input(demand.mu, "demand.mu", label='В среднем:', unit='шт') }}
-                    {{ form.input(demand.sigma, "demand.sigma", label='Отклонение:', unit='шт') }}
-                {% endwith %}
-            </fieldset>
+            {{ field(form.lot_size, unit='шт') }}
+            {{ field(form.limit, unit='шт') }}
+            {{ field(form.amount, unit='шт') }}
+            {{ field(form.total_time, unit='ч') }}
+            {{ field(form.times) }}
             
             <fieldset>
+                <div class="legend">Спрос, в час</div>
+                {{ field(form.demand_mu, unit='шт') }}
+                {{ field(form.demand_sigma, unit='шт') }}
+            </fieldset>
+
+            <fieldset>
                 <div class="legend">Время поставки партии</div>
-                
-                {% with %}
-                    {% if input.supply is defined %}
-                        {% set supply = input.supply %}
-                    {% else %}
-                        {% set supply = {'mu' : '', sigma : ''} %}
-                    {% endif %}
-                    {{ form.input(supply.mu, "supply.mu", label='В среднем:', unit='ч') }}
-                    {{ form.input(supply.sigma, "supply.sigma", label='Отклонение:', unit='ч') }}
-                {% endwith %}
+                {{ field(form.supply_mu, unit='ч') }}
+                {{ field(form.supply_sigma, unit='ч') }}
             </fieldset>
             
             <fieldset>
                 <div class="legend">Цены</div>
-                {% with %}
-                    {% if input.price is defined %}
-                        {% set price = input.price %}
-                    {% else %}
-                        {% set price = {'demand' : '', 'supply' : '', 'fine' : '', 'storage' : ''} %}
-                    {% endif %}
-                    {{ form.input(price.supply, "price.supply", label='Цена поставки:', unit='р') }}
-                    {{ form.input(price.storage, "price.storage", label='Цена хранения:', unit='р') }}
-                    {{ form.input(price.fine, "price.fine", label='Цена недостачи:', unit='р') }}
-                {% endwith %}
+                {{ field(form.demand_price, unit='р') }}
+                {{ field(form.supply_price, unit='р') }}
+                {{ field(form.storage_price, unit='р') }}
+                {{ field(form.fine, unit='р') }}
             </fieldset>
+
             <div class="row submit">
                 <input type="reset" value="Сбросить" />
                 <input type="submit" value="Считать" />
@@ -61,87 +42,61 @@
 
 {% block output %}
     <div class="block">
-        <div class="title">Результаты моделирования</div>
-        <div class="content" style="padding-top: 8px">
-            {% with %}
-                {% if output.agregated %}
-                    {% set mgc    = output.max_guaranteed_costs %}
-                    {% set output = output.mean %}
-                {% else %}
-                    {% set mgc = output.balance.costs %}
+        <div class="title">Статистика модели</div>
+        <table class="content">
+            <tr>
+                <th>Продажи</th>
+                <td>{{ units.sales|round(2)}} {{ unit('шт') }}</td>
+                <td>{{ balance.sales|round(2)}} {{ unit('р') }}</td>
+                {% if balance_diagram %}
+                    <td rowspan="5" style="padding: 0px; text-align: center">
+                        {{ balance_diagram }}
+                    </td>
                 {% endif %}
-                <table style="width: 100%">
-                    <caption>Затраты</caption>
-                    
-                    <tr>
-                        <th>
-                            {{ form.color('#008090') }}
-                            Поставки
-                        </th>
-                        <td>
-                            {{ output.units.supply }}
-                            <span class="unit" style="width: 36px">партий</span>
-                        </td>
-                        <td>{{ output.balance.supply }}
-                            <span class="unit">р</span>
-                        </td>
-                        {% if output.balance.costs %}
-                            <td rowspan="6" style="background: url(/images/pie-background.png) no-repeat; background-position: 18px 18px; border-left: solid 2px #CCCCCC">
-                                <img alt="Заявки" src="http://chart.apis.google.com/chart?cht=p&amp;chs=219x219&amp;chco=008090,FBFF53,FF4D6F&amp;chds=0,{{ output.balance.costs }}&amp;chd=t:{{ output.balance.supply }},{{ output.balance.storage }},{{ output.balance.fine }}&amp;chf=bg,s,FFFFFF00" />
-                            </td>
-                        {% endif %}
-                    </tr>
-                    
-                    <tr>
-                        <th>
-                            {{ form.color('#FBFF53') }}
-                            Хранение
-                        </th>
-                        <td>{{ output.units.storage|round(3) }}
-                            <span class="unit" style="width: 36px">единиц</span>
-                        </td>
-                        <td>{{ output.balance.storage|round(2) }}
-                            <span class="unit">р</span>
-                        </td>
-                    </tr>
-                    
-                    <tr>
-                        <th>
-                            {{ form.color('#FF4D6F') }}
-                            Недостачи
-                        </th>
-                        <td>{{ output.units.fine }}
-                            <span class="unit" style="width: 36px">случаев</span>
-                        </td>
-                        <td>{{ output.balance.fine }}
-                            <span class="unit">р</span>
-                        </td>
-                    </tr>
-                    
-                    <tr>
-                        <th>Средние затраты</th>
-                        <td colspan="2">
-                            {{ output.balance.costs|round(2) }}
-                            <span class="unit">р</span>
-                        </td>
-                    </tr>
-                    
-                    <tr>
-                        <th colspan="3" class="section">Максимальные гарантированные затраты</th>
-                    </tr>
-                    
-                    <tr>
-                        <td class="poster" colspan="3">
-                            {{ mgc|round(2) }}
-                            <span class="unit">р</span>
-                        </td>
-                    </tr>
-                    
-                </table>
-            {% endwith %}
-        </div>
+            </tr>
+            
+            <tr>
+                <th class="nested">{{ color('#FBFF53') }} Поставки</th>
+                <td>{{ units.supplies|round(2)}} {{ unit('шт') }}</td>
+                <td>{{ balance.supplies|round(2)}} {{ unit('р') }}</td>
+            </tr>
+            
+            <tr>
+                <th class="nested">{{ color('#1560BD') }} Хранение</th>
+                <td>{{ units.storage|round(2)}} {{ unit('шт') }}</td>
+                <td>{{ balance.storage|round(2)}} {{ unit('р') }}</td>
+            </tr>
+            
+            <tr>
+                <th class="nested">{{ color('#FF4D6F') }} Недостачи</th>
+                <td>{{ units.fines|round(2)}} {{ unit('шт') }}</td>
+                <td>{{ balance.fines|round(2)}} {{ unit('р') }}</td>
+            </tr>
+            
+            <tr>
+                <th class="nested">{{ color('#008090') }} Чистая прибыль</th>
+                <td colspan="2">{{ balance.profit|round(2)}} {{ unit('р') }}</td>
+            </tr>
+            
+            <tr>
+                <th colspan="4" class="section">Максимальные гарантированные расходы</th>
+            </tr>
+            
+            <tr>
+                <td class="poster" colspan="4">{{ max_guaranteed_costs|round(2)}} {{ unit('р') }}</td>
+            </tr>
+        </table>
     </div>
-{% endblock %}
+    
+    {% if history %}
+        <div class="block">
+            <div class="title">Количество товара на складе</div>
+            <div class="content">
+                {{ history_diagram }}
+            </div>
+        </div>
+    {% endif %}
+{% endblock output %}
 
 {% block about %}
 <div id="content">
