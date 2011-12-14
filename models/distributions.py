@@ -15,7 +15,7 @@ def normal(mu, sigma):
   while True:
     yield random.gauss(mu, sigma)
 
-def limitedNormal(mu, sigma, minimum, maximum, **extra):
+def limited_normal(mu, sigma, minimum, maximum, **extra):
   '''Усечённое нормальное распределение.
   
   mu - математическое ожидание, sigma - стандартное (среднеквадратическое)
@@ -50,10 +50,10 @@ def filter(satisfactory, generator):
     def filter(*args):
         stream = generator(*args)
         
-        value = next(stream)
+        value = stream.next()
         while satisfactory(value):
             yield value
-            value = next(stream)
+            value = stream.next()
         
     return filter
 

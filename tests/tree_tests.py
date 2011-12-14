@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-'Тесты для модуля tree'
+'Несимметрическая функция map для деревьев'
 
 import os, sys, operator, unittest
 tests = os.path.dirname(os.path.realpath(__file__))
@@ -8,117 +8,11 @@ sys.path.append(os.path.dirname(tests))
 
 import tree
 
-class FromMaterializedPathTest(unittest.TestCase):
-    'Стуктура входных данных'
-    
-    def test_positive(self):
-        'Исходные данные корректны'
-        
-        input = {
-            'a.b.c' : 5,
-            'a.b.d' : 6,
-            'd' : 'sdf',
-        }
-        
-        output = {
-            'a' : {
-                'b' : {
-                    'c' : 5,
-                    'd' : 6,
-                },
-            },
-            'd' : 'sdf',
-        }
-        
-        self.assertEqual(tree.from_materialized_path(input), output)
-    
-    def test_skipped_branches(self):
-        'Присутствуют пропуски ветвей'
-        
-        input = {
-            'a.x' : 5,
-            'b.y.z' : 6,
-        }
-        
-        output = {
-            'a': {
-                'x': 5,
-            },
-            'b': {
-                'y': {
-                    'z': 6,
-                },
-            },
-        }
-        
-        self.assertEqual(tree.from_materialized_path(input), output)
-    
-    def test_contradiction(self):
-        'Наличие дочерних ветвей у узла, имеющего значение'
-        
-        input = {
-            'a.x' : 5,
-            'a.x.y' : 6,
-        }
-        
-        self.assertRaises(ValueError, tree.from_materialized_path, input)
-        
-    def test_empty_branch_root(self):
-        'Пустой узел в корне'
-        
-        input = {
-            '.a': 5,
-        }
-        
-        self.assertRaises(ValueError, tree.from_materialized_path, input)
-        
-    def test_empty_branch_middle(self):
-        'Пустой узел в середине'
-        
-        input = {
-            'a..b': 5,
-        }
-        
-        self.assertRaises(ValueError, tree.from_materialized_path, input)
-    
-    
-    def test_empty_branch_end(self):
-        'Пустой узел в конце'
-        
-        input = {
-            'a.b.': 5,
-        }
-        
-        self.assertRaises(ValueError, tree.from_materialized_path, input)
-        
-    def test_empty_branches(self):
-        'Ряд пустых узлов'
-        
-        input = {
-            'a...b': 5,
-        }
-        
-        self.assertRaises(ValueError, tree.from_materialized_path, input)
-
-    def test_empty_input(self):
-        'Пустой вход'
-        
-        self.assertEqual(tree.from_materialized_path({}), {})
-        
-    def test_empty_row(self):
-        'Пустая входная строка'
-        
-        input = {
-            '': '',
-        }
-        
-        self.assertRaises(ValueError, tree.from_materialized_path, input)
-
 class RecursiveMapTest(unittest.TestCase):
     'Рекурсивный map'
     
     def test_positive(self):
-        'Простейший положительный тест'
+        'Структуры деревьев совпадают'
         
         trees = [
             {
@@ -140,7 +34,7 @@ class RecursiveMapTest(unittest.TestCase):
         )
     
     def test_unmatching_trees(self):
-        'Несовпадающие по структуре деревья'
+        'Структуры деревьев не совпадают'
         
         tree1 = {
             'a': {
@@ -170,7 +64,6 @@ class RecursiveMapTest(unittest.TestCase):
         
         self.assertEqual(tree.recursive_map(lambda *args: args, tree1, tree2), output)
 
-if __name__ == '__main__':
-    unittest.main()
+
 
 

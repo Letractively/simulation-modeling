@@ -1,20 +1,32 @@
 # -*- coding: utf-8 -*-
 
-import producer_tests, tree_tests, validator_tests, warehouse_tests
+import inspect, unittest
+
+__all__ = ['warehouse_tests', 'tree_tests']
 
 # Модули
-modules = (producer_tests, tree_tests, validator_tests, warehouse_tests)
+modules = dict((module, __import__(module)) for module in __all__)
 
-for module in modules:
-    for i in dir(module):
-        test_class = getattr(module, i)
-        if type(test_class) == type:
-            for j in dir(test_class):
-                test_function = getattr(test_class, j)
-                if type(test_function).__name__ == 'instancemethod' and test_function.__name__.find('test_') == 0:
-                    print test_function
-                    print test_function.__doc__
-                    print
+# Классы
+suites = dict((module, []) for module in modules.keys())
+
+for module_name, module in modules.items():
+    for name, obj in inspect.getmembers(module):
+        if inspect.isclass(obj):
+            suites[module_name].append(obj)
+
+# Выполнение тестов
+
+for module, cases in suites.items():
+    print
+    print
+    print modules[module].__doc__
+    print '-' * 70
+    for case in cases:
+        suite = unittest.TestLoader().loadTestsFromTestCase(case)
+        unittest.TextTestRunner(verbosity=2).run(suite)
+
+
 
 
 

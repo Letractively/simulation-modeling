@@ -10,6 +10,7 @@ from google.appengine.runtime import DeadlineExceededError
 
 # Модули приложения
 import models, tree, view
+from models import aggregator
 
 class Handler(webapp.RequestHandler):
     def _handle_exception(self, exception, debug_mode):
